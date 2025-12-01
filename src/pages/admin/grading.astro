@@ -1,4 +1,6 @@
 ---
+export const prerender = false;
+
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { createClient } from '@supabase/supabase-js';
 
@@ -7,7 +9,7 @@ const supabase = createClient(
     import.meta.env.SUPABASE_SERVICE_KEY
 );
 
-// Fetch only pending submissions
+
 const { data: submissions, error } = await supabase
     .from('assignment_submissions')
     .select('*')
