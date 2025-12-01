@@ -1,0 +1,302 @@
+---
+// This is a standalone page for Partners. We DO NOT import BaseLayout.
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Dashboard - TechBridge</title>
+    
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" href="/img/0.png" type="image/png">
+    
+    <style>
+        :root {
+            --header-height: 70px;
+            --sidebar-bg: #fff;
+            --sidebar-text: #161B45;
+            --content-bg: #F8F9FA;
+            --active-color: #469BD1;
+            --border-light: #EAEAF2;
+        }
+        body {
+            background-color: var(--content-bg);
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-primary, sans-serif);
+        }
+        
+        /* --- Header --- */
+        .content-header {
+            height: var(--header-height);
+            background: #fff;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        .header-logo img { width: 40px; height: 40px; }
+        .header-logo h2 { font-size: 1.25rem; margin: 0; color: var(--sidebar-text); }
+        
+        #auth-status { font-weight: 500; }
+        #auth-status a, #logout-btn {
+            color: var(--active-color);
+            font-weight: 600;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: inherit;
+            text-decoration: none;
+        }
+        #auth-status a:hover, #logout-btn:hover { text-decoration: underline; }
+
+        /* --- Main Content --- */
+        .content-body {
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .dashboard-header {
+            font-size: 2rem;
+            color: var(--color-primary);
+            margin-bottom: 24px;
+        }
+
+        .project-item {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+        .project-item summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            cursor: pointer;
+            list-style: none;
+        }
+        .project-item summary::-webkit-details-marker { display: none; }
+        .project-item-content {
+            padding: 20px;
+            border-top: 1px solid var(--border-light);
+        }
+        .project-item summary .count-badge {
+            background: var(--active-color);
+            color: #fff;
+            font-size: 0.9rem;
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        .submissions-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        .submissions-table th, .submissions-table td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .submissions-table th {
+            font-size: 0.9rem;
+            color: #555;
+        }
+        .submissions-table td .button {
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            margin-right: 5px;
+        }
+
+        .access-denied {
+            padding: 40px; 
+            text-align: center; 
+            max-width: 600px; 
+            margin: 40px auto; 
+            background: #fff; 
+            border-radius: 12px;
+        }
+        .access-denied h1 { color: var(--color-primary); }
+        .access-denied .button { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <header class="content-header">
+        <a href="/work-readiness" class="header-logo">
+            <img src="/img/0.png" alt="TechBridge Logo">
+            <h2>Partner Dashboard</h2>
+        </a>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div id="auth-status"></div> <a href="/logout" id="logout-btn" style="display: none;">Log Out</a>
+        </div>
+    </header>
+
+    <main class="course-content">
+        <div class="content-body">
+            <h1 class="dashboard-header" id="dashboard-title">My Posted Projects</h1>
+            
+            <div id="project-list-container">
+                </div>
+
+            <div id="no-projects-message" style="display: none; text-align: center; padding: 2rem;">
+                <p>You have not posted any projects yet.</p>
+                <a href="/work-readiness#apply" class="button primary">Post a Project</a>
+            </div>
+
+            <div id="access-denied" class="access-denied" style="display: none;">
+                <h1>Access Denied</h1>
+                <p>This dashboard is for registered partners only.</p>
+                <a href="/work-readiness" class="button secondary">Back to Program Page</a>
+            </div>
+            
+            <div id="login-prompt" class="access-denied" style="display: none;">
+                <h1>Access Denied</h1>
+                <p>You must be logged in to view this page.</p>
+                <a href="/login?redirect=/partner-dashboard" class="button primary">Log In</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        import { supabase } from '../supabaseClient.js';
+
+        const authStatus = document.getElementById('auth-status');
+        const logoutBtn = document.getElementById('logout-btn');
+        const projectListContainer = document.getElementById('project-list-container');
+        const noProjectsMessage = document.getElementById('no-projects-message');
+        const accessDenied = document.getElementById('access-denied');
+        const loginPrompt = document.getElementById('login-prompt');
+        
+        let currentUser = null;
+
+        async function initializeDashboard() {
+            // 1. Check for Logged-In User
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                loginPrompt.style.display = 'block';
+                return;
+            }
+            currentUser = user;
+            authStatus.textContent = `Welcome, ${currentUser.user_metadata.full_name || currentUser.email}`;
+            logoutBtn.style.display = 'block';
+
+            // 2. Check if User is a Partner
+            const { data: profile, error: profileError } = await supabase
+                .from('profiles')
+                .select('is_partner, organization')
+                .eq('id', user.id)
+                .single();
+            
+            if (!profile || !profile.is_partner) {
+                accessDenied.style.display = 'block';
+                return;
+            }
+            
+            document.getElementById('dashboard-title').textContent = `${profile.organization || 'My'} Projects`;
+
+            // 3. Load Partner's Projects AND their submissions
+            const { data: projects, error: projectError } = await supabase
+                .from('projects')
+                .select(`
+                    id,
+                    title,
+                    description,
+                    project_submissions (
+                        id,
+                        created_at,
+                        submission_url,
+                        profiles ( full_name, email )
+                    )
+                `)
+                .eq('posted_by', user.id)
+                .order('created_at', { ascending: false });
+
+            if (projectError) {
+                projectListContainer.innerHTML = '<p>Error loading projects.</p>';
+                return;
+            }
+
+            if (projects.length === 0) {
+                noProjectsMessage.style.display = 'block';
+                return;
+            }
+
+            projectListContainer.innerHTML = ''; // Clear loading
+            
+            // 4. Render the Projects and their Submissions
+            projects.forEach(project => {
+                const submissions = project.project_submissions;
+                const accordion = document.createElement('details');
+                accordion.className = 'project-item';
+                accordion.open = true;
+
+                let submissionsHtml = '<p>No submissions yet.</p>';
+                if (submissions.length > 0) {
+                    submissionsHtml = `
+                        <table class="submissions-table">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Submitted On</th>
+                                    <th>Links</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${submissions.map(sub => `
+                                    <tr>
+                                        <td>
+                                            <strong>${sub.profiles.full_name}</strong><br>
+                                            <small>${sub.profiles.email}</small>
+                                        </td>
+                                        <td>${new Date(sub.created_at).toLocaleDateString('en-ZA')}</td>
+                                        <td>
+                                            <a href="${sub.submission_url}" target="_blank" class="button secondary">View Project</a>
+                                            </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                }
+
+                accordion.innerHTML = `
+                    <summary>
+                        <span>${project.title}</span>
+                        <span class="count-badge">${submissions.length} Submissions</span>
+                    </summary>
+                    <div class="project-item-content">
+                        <p>${project.description}</p>
+                        <h4>Submissions</h4>
+                        ${submissionsHtml}
+                    </div>
+                `;
+                projectListContainer.appendChild(accordion);
+            });
+        }
+
+        // Add logout functionality
+        logoutBtn.addEventListener('click', async () => {
+            await supabase.auth.signOut();
+            window.location.href = '/login';
+        });
+
+        initializeDashboard();
+    </script>
+</body>
+</html>

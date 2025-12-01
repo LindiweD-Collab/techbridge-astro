@@ -1,0 +1,148 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+// Get project ID from URL, e.g., /submit-project?id=1
+const projectId = Astro.url.searchParams.get('id');
+---
+<BaseLayout title="Submit Project">
+    <style>
+        .submit-form-container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 2.5rem;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .form-group input { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--color-border); }
+        .form-button { width: 100%; padding: 14px; border: none; border-radius: 12px; background-color: var(--color-primary); color: var(--color-white); font-weight: 600; font-size: 1rem; cursor: pointer; }
+        .form-button:disabled { background: #ccc; cursor: not-allowed; }
+        .form-status { margin-top: 1rem; font-weight: 600; text-align: center; }
+
+        .project-details {
+            background: var(--color-light-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--color-border);
+        }
+        .project-details h2 {
+            color: var(--color-primary);
+            margin-top: 0;
+        }
+        
+        .access-denied { padding: 40px; text-align: center; max-width: 700px; margin: 40px auto; background: #fff; border-radius: 12px; }
+        .access-denied h1 { color: var(--color-primary); }
+        .access-denied .button { margin-top: 20px; }
+    </style>
+
+    <main class="section">
+        <div class="container">
+            <div id="loading-container">
+                <h1 class="section-title text-center">Loading Project...</h1>
+            </div>
+
+            <form id="submit-form" class="submit-form-container" style="display: none;">
+                <div class="project-details">
+                    <h2 id="project-title"></h2>
+                    <p id="project-partner" style="font-weight: 600;"></p>
+                    <p id="project-desc"></p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="submission-url">Your Submission URL*</label>
+                    <input type="url" id="submission-url" placeholder="https://github.com/... or https://codesandbox.io/..." required />
+                    <small>Please provide a public link to your work (e.g., GitHub, CodeSandbox, Google Drive, Figma).</small>
+                </div>
+                
+                <button type="submit" class="button primary form-button" id="submit-button">Submit Project for Review</button>
+                <p id="form-status" class="form-status"></p>
+            </form>
+            
+            <div id="login-prompt" class="access-denied" style="display: none;">
+                <h1>Access Denied</h1>
+                <p>You must be logged in to submit a project.</p>
+                <a href={`/login?redirect=/my-courses/submit-project?id=${projectId}`} class="button primary">Log In to Submit</a>
+            </div>
+        </div>
+    </main>
+    
+    <script define:vars={{ projectId }}>
+        import { supabase } from '../../supabaseClient.js';
+
+        const form = document.getElementById('submit-form');
+        const statusEl = document.getElementById('form-status');
+        const loadingEl = document.getElementById('loading-container');
+        const loginPromptEl = document.getElementById('login-prompt');
+        
+        let currentUser = null;
+        let currentProject = null;
+
+        async function initialize() {
+            // 1. Check for logged in user
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                loadingEl.style.display = 'none';
+                loginPromptEl.style.display = 'block';
+                return;
+            }
+            currentUser = user;
+            
+            // 2. User is logged in, fetch the project details
+            if (!projectId) {
+                loadingEl.innerHTML = '<h1 class="section-title text-center">Error: No project ID provided.</h1>';
+                return;
+            }
+
+            const { data, error } = await supabase
+                .from('projects')
+                .select('*')
+                .eq('id', projectId)
+                .single();
+
+            if (error || !data) {
+                loadingEl.innerHTML = '<h1 class="section-title text-center">Error: Project not found.</h1>';
+                return;
+            }
+            currentProject = data;
+            
+            // 3. Populate and show the form
+            document.getElementById('project-title').textContent = currentProject.title;
+            document.getElementById('project-desc').textContent = currentProject.description;
+            document.getElementById('project-partner').textContent = `Partner: ${currentProject.stakeholder_name}`;
+            
+            loadingEl.style.display = 'none';
+            form.style.display = 'block';
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const url = document.getElementById('submission-url').value;
+            const button = document.getElementById('submit-button');
+            
+            button.disabled = true;
+            button.textContent = 'Submitting...';
+            
+            // This inserts into the 'project_submissions' table
+            const { error } = await supabase.from('project_submissions').insert({
+                user_id: currentUser.id,
+                project_id: currentProject.id,
+                submission_url: url
+            });
+
+            if (error) {
+                statusEl.textContent = `Error: ${error.message}`;
+                statusEl.style.color = '#e55649';
+                button.disabled = false;
+                button.textContent = 'Submit Project for Review';
+            } else {
+                statusEl.textContent = 'Success! Your project has been submitted for review.';
+                statusEl.style.color = '#28a745';
+                form.reset();
+            }
+        });
+
+        initialize();
+    </script>
+</BaseLayout>

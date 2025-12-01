@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="For Individuals">
+  <main>
+    <section class="page-header page-header-community">
+      <div class="hero-overlay"></div>
+      <div class="container">
+        <div class="hero-content" style="max-width: 100%; text-align: center;">
+          <h1>Empowering Individuals</h1>
+          <p>Upskill, learn tech, build your portfolio, and prepare for future careers.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Career Dev -->
+    <section class="section service-section">
+      <div class="container service-grid">
+        <div class="service-image">
+          <img src="/img/career-development.jpg" alt="Career Development">
+        </div>
+        <div class="service-content">
+          <h2>Career Development & Mentorship</h2>
+          <p>
+            Join structured career development programs including mentorship, skills training,
+            tech bootcamps, and job-readiness coaching.
+          </p>
+          <a href="/apply" class="button primary">Apply Now</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Courses -->
+    <section class="section service-section reverse section-gray">
+      <div class="container service-grid">
+        <div class="service-content">
+          <h2>Courses & Skills Training</h2>
+          <p>
+            Access self-paced or instructor-led courses focused on tech, entrepreneurship, and
+            workplace readiness. Earn certificates for completion.
+          </p>
+          <a href="/courses" class="button secondary">Browse Courses</a>
+        </div>
+        <div class="service-image">
+          <img src="/img/online-learning.jpg" alt="Online learning">
+        </div>
+      </div>
+    </section>
+
+    <!-- Tasks -->
+    <section class="section service-section">
+      <div class="container service-grid">
+        <div class="service-image">
+          <img src="/img/tasks.jpg" alt="Tasks & activities">
+        </div>
+        <div class="service-content">
+          <h2>Personal Tasks & Goals</h2>
+          <p>
+            Track learning tasks, personal goals, and progress with an interactive dashboard.
+          </p>
+          <a href="/dashboard" class="button secondary">Go to Dashboard</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</BaseLayout>

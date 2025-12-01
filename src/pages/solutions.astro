@@ -1,0 +1,305 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+
+const SOLUTIONS = [
+  {
+    id: 'support', 
+    title: "AI-Powered Customer Support",
+    subtitle: "24/7 Intelligent Chatbots & Ticket Automation",
+    description: "Deploy intelligent chatbots on your Website and WhatsApp. These bots handle FAQs, book appointments, and qualify leads 24/7 without human intervention. When a query is too complex, it seamlessly hands over to your human team.",
+    features: [
+        "WhatsApp & Web Widget Integration",
+        "Custom Knowledge Base Training",
+        "Human Handover Logic",
+        "Automated Appointment Booking",
+        "24/7 Instant Responses"
+    ],
+    price: "R5,000",
+    priceLabel: "One-Time Setup Fee",
+    links: { yoco: "https://pay.yoco.com/ai-bot", ozow: "https://pay.ozow.com/ai-bot" }
+  },
+  {
+    id: 'automation', // Matches the link /solutions#automation
+    title: "Automated HR & Operations",
+    subtitle: "Robotic Process Automation (RPA)",
+    description: "Stop doing repetitive data entry. We build software bots (RPA) that mimic human actions to move data between your systems automatically. Perfect for employee onboarding, leave requests, and payroll data entry.",
+    features: [
+        "Employee Onboarding Workflows",
+        "Document Generation & Signing",
+        "Leave & Expense Approval Bots",
+        "Payroll Data Sync",
+        "Error-Free Data Entry"
+    ],
+    price: "R8,500",
+    priceLabel: "Project Deposit",
+    links: { yoco: "https://pay.yoco.com/rpa-deposit", ozow: "https://pay.ozow.com/rpa-deposit" }
+  },
+  {
+    id: 'crm', 
+    title: "Intelligent Sales Systems",
+    subtitle: "CRM Automation & Lead Scoring",
+    description: "We set up and customize CRM systems (like HubSpot or Salesforce) to ensure your sales team never misses a lead. Our AI tools score leads based on behavior so you only call the hottest prospects.",
+    features: [
+        "CRM Setup & Data Import",
+        "Automated Email Sequences",
+        "Lead Scoring Algorithms",
+        "Pipeline Visualization",
+        "Sales Team Training"
+    ],
+    price: "R7,000",
+    priceLabel: "System Setup Fee",
+    links: { yoco: "https://pay.yoco.com/crm-setup", ozow: "https://pay.ozow.com/crm-setup" }
+  },
+  {
+    id: 'data', 
+    title: "Automated Data & Reporting",
+    subtitle: "Business Intelligence Dashboards",
+    description: "Turn your messy spreadsheets into interactive dashboards. We connect your data sources (Excel, SQL, Xero) to PowerBI to visualize your business performance in real-time.",
+    features: [
+        "Interactive PowerBI Dashboards",
+        "Real-Time Revenue Tracking",
+        "Automated Monthly PDF Reports",
+        "Customer Behavior Analysis",
+        "Data Cleaning Service"
+    ],
+    price: "R6,000",
+    priceLabel: "Project Deposit",
+    links: { yoco: "https://pay.yoco.com/data-deposit", ozow: "https://pay.ozow.com/data-deposit" }
+  }
+];
+---
+
+<BaseLayout title="Professional Solutions">
+    <style>
+        :root {
+            --primary: #161B45;
+            --accent: #469BD1;
+            --bg-light: #F9FAFB;
+            --border: #E5E7EB;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        /* HEADER */
+        .page-header-solutions {
+            background: linear-gradient(rgba(22, 27, 69, 0.95), rgba(22, 27, 69, 0.85)), url('/img/0.png'); 
+            background-size: cover;
+            background-position: center;
+            padding: 100px 0;
+            text-align: center;
+            color: white;
+        }
+        .page-header-solutions h1 { font-size: 3rem; margin-bottom: 1rem; color: #fff; }
+        .page-header-solutions p { font-size: 1.2rem; opacity: 0.9; max-width: 700px; margin: 0 auto; }
+        .solutions-wrapper { padding: 80px 0; background: #fff; }
+        
+        .solution-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 50px;
+            margin-bottom: 100px;
+            align-items: start;
+            padding-bottom: 60px;
+            border-bottom: 1px solid #eee;
+            scroll-margin-top: 100px; 
+        }
+        .solution-row:last-child { border-bottom: none; margin-bottom: 0; }
+
+        @media (min-width: 992px) {
+            .solution-row { grid-template-columns: 1.2fr 0.8fr; }
+        }
+
+        .solution-content h2 { font-size: 2.2rem; color: var(--primary); margin-bottom: 0.5rem; margin-top: 0; }
+        .solution-subtitle { font-size: 1.1rem; color: var(--accent); font-weight: 600; margin-bottom: 1.5rem; display: block; text-transform: uppercase; letter-spacing: 1px; }
+        .solution-description { font-size: 1.1rem; color: #555; line-height: 1.7; margin-bottom: 2rem; }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        @media(min-width: 600px) { .feature-grid { grid-template-columns: 1fr 1fr; } }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #333;
+            font-weight: 500;
+        }
+        .feature-icon { color: #10B981; font-size: 1.2rem; }
+
+        
+        .pricing-card {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 120px;
+        }
+        .price-label { font-size: 0.9rem; color: #666; text-transform: uppercase; font-weight: 700; }
+        .price-amount { font-size: 2.5rem; font-weight: 800; color: var(--primary); margin: 10px 0 25px 0; display: block; }
+        
+       
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn-pay {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: var(--accent);
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .btn-pay:hover { background: var(--primary); transform: translateY(-3px); }
+
+        .btn-contact {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: transparent;
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 2px solid var(--primary);
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+        }
+        .btn-contact:hover { background: var(--primary); color: white; }
+
+        .secure-text { font-size: 0.8rem; color: #888; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 5px; }
+
+       
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); z-index: 9999;
+            display: none; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.open { display: flex; opacity: 1; }
+        
+        .payment-modal {
+            background: #fff; width: 90%; max-width: 450px;
+            border-radius: 16px; padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); text-align: center;
+            transform: translateY(20px); transition: transform 0.3s ease;
+            position: relative;
+        }
+        .modal-overlay.open .payment-modal { transform: translateY(0); }
+
+        .modal-close { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; background: none; border: none; color: #999; }
+        .modal-title { font-size: 1.5rem; color: var(--primary); margin-bottom: 10px; }
+        .modal-subtitle { color: #666; margin-bottom: 30px; font-size: 0.95rem; }
+        
+        .payment-options { display: flex; flex-direction: column; gap: 15px; }
+        
+        .pay-option-btn {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 16px; border-radius: 10px; text-decoration: none; font-weight: 700;
+            transition: transform 0.2s;
+        }
+        .pay-option-btn:hover { transform: translateY(-2px); }
+        .btn-yoco { background: var(--primary); color: white; }
+        .btn-ozow { background: #F97316; color: white; }
+    </style>
+
+    <main>
+       
+
+        <section class="solutions-wrapper">
+            <div class="container">
+                {SOLUTIONS.map(sol => (
+                    <div class="solution-row" id={sol.id}>
+                        <div class="solution-content">
+                            <h2>{sol.title}</h2>
+                            <span class="solution-subtitle">{sol.subtitle}</span>
+                            <p class="solution-description">{sol.description}</p>
+                            
+                            <div class="feature-grid">
+                                {sol.features.map(f => (
+                                    <div class="feature-item">
+                                        <span class="feature-icon">✔</span> {f}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div class="pricing-card">
+                            <span class="price-label">{sol.priceLabel}</span>
+                            <span class="price-amount">{sol.price}</span>
+                            
+                            <div class="button-group">
+                                <button class="btn-pay trigger-payment"
+                                    data-title={sol.title}
+                                    data-yoco={sol.links.yoco}
+                                    data-ozow={sol.links.ozow}>
+                                    Start Project (Pay Deposit)
+                                </button>
+                                
+                                <a href={`/contact?service=${encodeURIComponent(sol.title)}`} class="btn-contact">
+                                    Talk to an Expert
+                                </a>
+                            </div>
+                            
+                            <p class="secure-text">🔒 Secure Payment via Yoco/Ozow</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </section>
+    </main>
+
+    <div id="payment-modal-overlay" class="modal-overlay">
+        <div class="payment-modal">
+            <button class="modal-close" id="close-modal">&times;</button>
+            <h3 class="modal-title">Start Project</h3>
+            <p class="modal-subtitle" id="modal-service-title">Service Name</p>
+            
+            <div class="payment-options">
+                <a href="#" id="link-yoco" target="_blank" class="pay-option-btn btn-yoco">
+                    💳 Pay with Card (Yoco)
+                </a>
+                <a href="#" id="link-ozow" target="_blank" class="pay-option-btn btn-ozow">
+                    ⚡ Pay with Instant EFT (Ozow)
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('payment-modal-overlay');
+            const closeModal = document.getElementById('close-modal');
+            const modalTitle = document.getElementById('modal-service-title');
+            const linkYoco = document.getElementById('link-yoco');
+            const linkOzow = document.getElementById('link-ozow');
+
+            document.querySelectorAll('.trigger-payment').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    modalTitle.textContent = btn.dataset.title;
+                    linkYoco.href = btn.dataset.yoco;
+                    linkOzow.href = btn.dataset.ozow;
+                    modal.classList.add('open');
+                });
+            });
+
+            const close = () => modal.classList.remove('open');
+            closeModal.addEventListener('click', close);
+            modal.addEventListener('click', (e) => { if(e.target === modal) close(); });
+        });
+    </script>
+</BaseLayout>

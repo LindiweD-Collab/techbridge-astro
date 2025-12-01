@@ -1,0 +1,27 @@
+---
+// 1. Import your Supabase client
+import { supabase } from '../supabaseClient';
+
+// 2. Run the sign-out command on the server.
+await supabase.auth.signOut();
+
+// 3. Redirect the user to the LOGIN page
+return Astro.redirect('/login');
+---
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Logging out...</title>
+        <script>
+            import { supabase } from '/src/supabaseClient.js';
+            supabase.auth.signOut().then(() => {
+                // Once the local session is cleared, force redirect
+                window.location.href = '/login';
+            });
+        </script>
+    </head>
+    <body>
+        Logging out, please wait...
+    </body>
+</html>

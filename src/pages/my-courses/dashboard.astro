@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+<BaseLayout title="My Courses">
+    <style>
+        .dashboard { max-width: 900px; margin: 40px auto; }
+        .course-link-card {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            display: block;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .course-link-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            color: var(--color-accent);
+        }
+        .course-link-card span {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: #555;
+            display: block;
+            margin-top: 4px;
+        }
+    </style>
+    <main class="section">
+        <div class="container dashboard">
+            <h1 class="section-title text-center">My Courses</h1>
+            <p id="loading-message">Loading your courses...</p>
+            
+            <div id="courses-list" style="display:none; display: grid; gap: 1rem;">
+                </div>
+            
+            <p id="no-courses-message" style="display:none; font-size: 1.1rem;">
+                You are not enrolled in any courses yet.
+                <a href="/academy" style="color: var(--color-accent); font-weight: 600;">Browse courses</a>
+            </p>
+        </div>
+    </main>
+
+    <script>
+       import { supabase } from '../../supabaseClient.js'; 
+
+
+        async function loadCourses() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                // If not logged in, send to login page
+                window.location.href = '/login'; 
+                return;
+            }
+
+            // === THIS IS THE FIX ===
+            // We now select from 'paid_courses' where 'user_id' matches auth.uid()
+            const { data, error } = await supabase
+                .from('paid_courses')
+                .select('course_id')
+                .eq('user_id', user.id); // <-- This is now correct
+
+            document.getElementById('loading-message').style.display = 'none';
+            const listEl = document.getElementById('courses-list');
+
+            if (data && data.length > 0) {
+                listEl.style.display = 'grid';
+                data.forEach(enrollment => {
+                    const card = document.createElement('a');
+                    
+                    // This creates the correct link, e.g., /my-courses/digital-literacy
+                    card.href = `/my-courses/${enrollment.course_id}`; 
+                    card.className = 'course-link-card';
+                    
+                    // This makes the title look nice, e.g., "Digital Literacy"
+                    const title = enrollment.course_id.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    
+                    card.innerHTML = `${title} <span>Start Learning &rarr;</span>`;
+                    listEl.appendChild(card);
+                });
+            } else {
+                document.getElementById('no-courses-message').style.display = 'block';
+            }
+        }
+        loadCourses();
+    </script>
+</BaseLayout>

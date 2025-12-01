@@ -1,0 +1,631 @@
+---
+// src/pages/my-courses/[id].astro
+import { courses } from '../../data/courses.js';
+
+export function getStaticPaths() {
+    return Object.values(courses).map(course => ({
+        params: { id: course.id },
+        props: { course },
+    }));
+}
+
+const { course } = Astro.props;
+
+// Helpers
+const allLessons = course.modules.flatMap(m => m.lessons);
+const lessonsById = allLessons.reduce((acc, lesson) => {
+    acc[lesson.id] = lesson;
+    return acc;
+}, {});
+
+const courseJson = JSON.stringify({
+    id: course.id,
+    title: course.title,
+    modules: course.modules,
+    allLessons: allLessons,
+    lessonsById: lessonsById
+});
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{course.title}</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" href="/img/0.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- YOUR PREMIUM STYLES (Restored) --- */
+        :root {
+            --color-primary: #161B45;
+            --color-secondary: #28317E;
+            --color-accent: #469BD1;
+            --color-white: #FFFFFF;
+            --color-text: #333;
+            --color-text-light: #555;
+            --color-light-bg: #F8F9FA;
+            --color-border: #EAEAF2;
+            --border-radius: 24px;
+            --font-primary: 'Poppins', sans-serif;
+            --shadow: 0px 10px 30px -5px rgba(0, 0, 0, 0.1);
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--font-primary);
+            background: var(--color-light-bg);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            color: var(--color-text);
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 280px;
+            background: #fff;
+            border-right: 1px solid var(--color-border);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            flex-shrink: 0;
+            z-index: 20;
+        }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid var(--color-border); display: flex; align-items: center; gap: 10px; }
+        .sidebar-header img { width: 30px; height: 30px; }
+        .sidebar-header h2 { font-size: 1rem; font-weight: 700; color: var(--color-primary); margin: 0; }
+
+        .progress-area { padding: 20px; border-bottom: 1px solid var(--color-border); }
+        .progress-text { font-size: 0.85rem; font-weight: 600; color: var(--color-text-light); display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .progress-bar { height: 6px; background: #E5E7EB; border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; width: 0%; background: var(--color-accent); transition: width 0.4s ease; }
+        .modules-list { flex: 1; overflow-y: auto; padding: 0; }
+
+        /* Accordion */
+        .module-accordion { border-bottom: 1px solid var(--color-border); }
+        .module-summary {
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--color-primary);
+            background: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            list-style: none;
+            transition: background 0.2s;
+        }
+        .module-summary:hover { background: #F9FAFB; }
+        .module-summary::-webkit-details-marker { display: none; }
+        .chevron { width: 16px; height: 16px; color: var(--color-text-light); transition: transform 0.2s; }
+        .module-accordion[open] .chevron { transform: rotate(180deg); }
+
+        .lesson-list { list-style: none; padding: 0; margin: 0; background: #F9FAFB; }
+        .lesson-item {
+            padding: 12px 20px 12px 30px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--color-text-light);
+            border-left: 4px solid transparent;
+            display: flex; align-items: center; gap: 10px;
+            transition: all 0.2s;
+        }
+        .lesson-item:hover { background: #f4faff; }
+        .lesson-item.active { background: #e6f2ff; border-left-color: var(--color-accent); color: var(--color-accent); font-weight: 600; }
+        .lesson-item.completed .status-icon { color: var(--success); }
+        .status-icon { width: 16px; height: 16px; flex-shrink: 0; color: #D1D5DB; }
+
+        /* MAIN CONTENT */
+        .main { flex: 1; display: flex; flex-direction: column; height: 100vh; position: relative; }
+        .top-bar {
+            height: 70px; background: #fff; border-bottom: 1px solid var(--color-border);
+            display: flex; align-items: center; justify-content: flex-end; padding: 0 30px; flex-shrink: 0;
+        }
+        #user-name { font-weight: 600; font-size: 0.9rem; margin-right: 20px; color: var(--color-primary); }
+        .btn-logout { color: #EF4444; border: 1px solid #FEE2E2; background: transparent; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn-logout:hover { background: #FEF2F2; border-color: #EF4444; }
+
+        .content-scroll { flex: 1; overflow-y: auto; padding: 40px; }
+        .lesson-view { max-width: 900px; margin: 0 auto; padding-bottom: 60px; }
+        
+        h1 { font-size: 1.8rem; color: var(--color-primary); margin-bottom: 1.5rem; margin-top: 0; font-weight: 700; }
+
+        /* VIDEO WRAPPER */
+        .video-wrapper {
+            background: #ffffff; padding: 2.5rem; border-radius: 20px;
+            box-shadow: var(--shadow); border: 1px solid var(--color-border);
+            margin-bottom: 3rem;
+        }
+        .video-title { font-weight: 700; color: var(--color-primary); font-size: 1.4rem; margin-bottom: 1rem; }
+        .video-player { width: 100%; border-radius: 18px; overflow: hidden; background: #000; border: 1px solid #ddd; aspect-ratio: 16/9; }
+        .video-player iframe { width: 100%; height: 100%; }
+
+        /* TABS */
+        .tabs-nav { display: flex; gap: 0; border-bottom: 1px solid var(--color-border); margin-bottom: 30px; }
+        .tab-btn { 
+            padding: 12px 24px; font-weight: 600; font-size: 1.05rem; border-radius: 10px 10px 0 0; 
+            background: linear-gradient(180deg, #f9fafb, #f3f4f6); color: #374151; 
+            border: 1px solid transparent; border-bottom: none; margin-right: 5px;
+            cursor: pointer; transition: all 0.25s ease; box-shadow: 0px 2px 6px rgba(0,0,0,0.04);
+        }
+        .tab-btn:hover { background: linear-gradient(180deg, #ffffff, #f3f4f6); color: #0c0f16; transform: translateY(-2px); box-shadow: 0px 6px 16px rgba(0,0,0,0.08); }
+        .tab-btn.active { background: #ffffff; color: #18191a; border-color: #e5e7eb; border-bottom: 1px solid #ffffff; box-shadow: 0px -2px 10px rgba(0,0,0,0.05); z-index: 1; }
+        
+        /* Locked Tab Style */
+        .tab-btn.locked { color: #9CA3AF; cursor: not-allowed; background: #F3F4F6; }
+        .tab-btn.locked:hover { transform: none; box-shadow: none; color: #9CA3AF; }
+
+        .tab-pane { display: none; animation: fadeUp 0.3s; }
+        .tab-pane.active { display: block; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ASSIGNMENT CARD */
+        .assignment-card {
+            background: #ffffff; border-radius: 20px; padding: 2rem;
+            border: 1px solid var(--color-border); box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+            margin-bottom: 2rem;
+        }
+        .assignment-card h3 { margin-top: 0; color: var(--color-primary); font-size: 1.4rem; margin-bottom: 1rem; }
+        .assignment-content { color: var(--color-text-light); font-size: 1rem; margin-bottom: 1.2rem; line-height: 1.6; }
+
+        .assignment-textarea {
+            width: 100%; min-height: 150px; border: 1px solid var(--color-border);
+            border-radius: 14px; padding: 1rem; font-size: 1rem; color: var(--color-text);
+            background: #f9fafb; transition: all .25s ease; resize: vertical; box-sizing: border-box;
+        }
+        .assignment-textarea:focus { outline: none; background: #ffffff; border-color: var(--color-accent); box-shadow: 0 0 0 3px rgba(70,155,209,0.25); }
+
+        .btn {
+            display: inline-block; margin-top: 1.2rem; background: linear-gradient(135deg, #2563EB, #1E40AF);
+            color: #fff; padding: 12px 25px; border-radius: 12px; border: none; font-weight: 600;
+            cursor: pointer; font-size: 1rem; transition: all .25s ease; text-decoration: none;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+        }
+        .btn:hover { background: linear-gradient(135deg, #1D4ED8, #1E3A8A); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(37, 99, 235, 0.30); }
+        .btn:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        /* Grading Feedback */
+        .grading-box { margin-top: 20px; padding: 20px; border-radius: 12px; font-size: 0.95rem; line-height: 1.6; border: 1px solid transparent; }
+        .grading-box.pending { background: #FEF3C7; color: #92400E; border-color: #F59E0B; }
+        .grading-box.pass { background: #ECFDF5; color: #065F46; border-color: #10B981; }
+        .grading-box.fail { background: #FEF2F2; color: #991B1B; border-color: #EF4444; }
+
+        /* Quiz */
+        .quiz-card { background: #ffffff; border-radius: 20px; padding: 2.5rem; border: 1px solid var(--color-border); box-shadow: var(--shadow); }
+        .quiz-item { margin-bottom: 30px; padding-bottom: 25px; border-bottom: 1px dashed var(--color-border); }
+        .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .quiz-q { font-weight: 700; color: var(--color-primary); margin-bottom: 15px; display: block; font-size: 1.1rem; line-height: 1.5; }
+        
+        .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+        .quiz-label {
+            display: flex; align-items: center; gap: 15px; padding: 15px 20px;
+            border: 1px solid var(--color-border); border-radius: 10px; cursor: pointer; 
+            transition: all 0.2s ease; background: #fff; font-weight: 500; color: var(--color-text);
+        }
+        .quiz-label:hover { background: #F8F9FA; border-color: #545557; }
+        .quiz-label input { accent-color: #545557; width: 20px; height: 20px; margin: 0; cursor: pointer; }
+
+        /* Lock Screen */
+        #lock { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        @media (max-width: 768px) {
+            body { flex-direction: column; overflow: auto; }
+            .sidebar { display: none; }
+            .top-bar { padding: 0 20px; justify-content: space-between; }
+            .scroll-area { padding: 20px; }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="lock">
+        <img src="/img/0.png" width="60" style="margin-bottom: 20px;">
+        <h2 id="lock-msg" style="color: var(--color-primary);">Loading...</h2>
+        <a id="lock-link" href="/login" class="btn" style="display:none; margin-top:20px;">Log In</a>
+    </div>
+
+    <div id="app" style="visibility: hidden; display: flex; width: 100%;">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="/img/0.png"> <h2>TechBridge</h2>
+            </div>
+            <div class="progress-area">
+                <div class="progress-text"><span>Your Progress</span><span id="progress-text">0%</span></div>
+                <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+                <button id="cert-btn" class="btn btn-success" style="width:100%; margin-top:20px; font-size:0.85rem; display:none;">Download Certificate</button>
+            </div>
+            <div class="modules-list" id="sidebar-content"></div>
+        </aside>
+
+        <div class="main">
+            <div class="top-bar">
+                <span id="user-name" style="font-weight:600; margin-right:20px;"></span>
+                <button id="logout-btn" class="btn-logout">Log Out</button>
+            </div>
+            <div class="content-scroll">
+                <div class="lesson-view" id="lesson-area"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="data" data-json={courseJson} style="display: none;"></div>
+
+    <script type="module">
+        import { supabase } from '/src/supabaseClient.js';
+
+        const data = JSON.parse(document.getElementById('data').dataset.json);
+        const { id: courseId, modules, lessonsById, allLessons } = data;
+
+        let currentUser = null;
+        let completed = new Set();
+        let currentId = allLessons[0].id;
+        let lessonProgress = {}; 
+        let submissions = {};
+
+        async function init() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if(!user) return lock("Access Denied", true);
+            currentUser = user;
+
+            const { data: sub } = await supabase.from('paid_courses').select('course_id')
+                .eq('user_id', user.id).eq('course_id', courseId).maybeSingle();
+            
+            if(!sub) return lock("Not Enrolled", false);
+
+            document.getElementById('lock').style.display = 'none';
+            document.getElementById('app').style.visibility = 'visible';
+            document.getElementById('user-name').textContent = user.user_metadata.full_name || user.email;
+
+            await loadProgress();
+            renderSidebar();
+            renderLesson(currentId);
+        }
+
+        function lock(msg, showBtn) {
+            document.getElementById('lock-msg').textContent = msg;
+            if(showBtn) document.getElementById('lock-link').style.display = 'inline-flex';
+        }
+
+        async function loadProgress() {
+            // 1. Load ticks (completed lessons)
+            const { data: progress } = await supabase.from('user_progress')
+                .select('*')
+                .eq('user_id', currentUser.id)
+                .eq('course_id', courseId);
+            
+            if(progress) {
+                progress.forEach(r => {
+                    if (r.is_completed) completed.add(r.video_id); // Use video_id to match DB
+                    lessonProgress[r.video_id] = {
+                        quiz: r.quiz_complete,
+                        assign: r.assignment_complete
+                    };
+                });
+            }
+
+            // 2. Load Submissions (Pending/Approved)
+            const { data: subs } = await supabase.from('assignment_submissions')
+                .select('lesson_id, status, feedback')
+                .eq('user_id', currentUser.id)
+                .eq('course_id', courseId);
+
+            if(subs) {
+                subs.forEach(s => {
+                    submissions[s.lesson_id] = s;
+                });
+            }
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const pct = Math.round((completed.size / allLessons.length) * 100);
+            document.getElementById('progress-fill').style.width = pct + "%";
+            document.getElementById('progress-text').textContent = pct + "%";
+            if(pct === 100) document.getElementById('cert-btn').style.display = 'block';
+        }
+
+        function renderSidebar() {
+            const el = document.getElementById('sidebar-content');
+            el.innerHTML = '';
+            
+            modules.forEach(mod => {
+                const det = document.createElement('details');
+                det.className = 'module-accordion';
+                det.open = mod.lessons.some(l => l.id === currentId); 
+
+                let html = '';
+                mod.lessons.forEach(l => {
+                    const active = l.id === currentId ? 'active' : '';
+                    const done = completed.has(l.id) ? 'completed' : '';
+                    const icon = done 
+                        ? `<svg class="status-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`
+                        : `<svg class="status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>`;
+
+                    html += `<li class="lesson-item ${active} ${done}" data-id="${l.id}">${icon} <span>${l.title}</span></li>`;
+                });
+
+                det.innerHTML = `
+                    <summary class="module-summary">
+                        <span>${mod.title}</span>
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </summary>
+                    <ul class="lesson-list">${html}</ul>
+                `;
+                el.appendChild(det);
+            });
+
+            el.querySelectorAll('.lesson-item').forEach(div => {
+                div.addEventListener('click', () => {
+                    currentId = div.dataset.id;
+                    renderLesson(currentId);
+                    updateSidebarState();
+                });
+            });
+        }
+        
+        function updateSidebarState() {
+            document.querySelectorAll('.lesson-item').forEach(div => {
+                const id = div.dataset.id;
+                div.classList.toggle('active', id === currentId);
+                div.classList.toggle('completed', completed.has(id));
+            });
+        }
+
+        function renderLesson(id) {
+            const l = lessonsById[id];
+            const isDone = completed.has(id);
+            
+            // Status Check
+            const subData = submissions[id] || {}; 
+            const assignStatus = subData.status; // pending, approved, rejected
+            const assignFeedback = subData.feedback || '';
+            
+            // Is assignment actually marked complete in user_progress?
+            const isAssignApproved = lessonProgress[id]?.assign || false;
+
+            // ** LOCK LOGIC **
+            // Quiz is locked IF there is an assignment AND it is not yet approved
+            const quizLocked = (!!l.assignment) && !isAssignApproved;
+
+            const el = document.getElementById('lesson-area');
+            el.innerHTML = `
+                <h1>${l.title}</h1>
+                
+                <div class="tabs-nav">
+                    <button class="tab-btn active" data-t="video">Video Lesson</button>
+                    <button class="tab-btn" data-t="assign">Assignment</button>
+                    
+                    <button class="tab-btn ${quizLocked ? 'locked' : ''}" 
+                            data-t="quiz" 
+                            ${quizLocked ? 'disabled title="Assignment must be approved first"' : ''}>
+                        Quiz ${quizLocked ? '🔒' : ''}
+                    </button>
+
+                    ${l.labEmbedUrl ? `<button class="tab-btn" data-t="lab">Lab</button>` : ''}
+                </div>
+
+                <div id="t-video" class="tab-pane active">
+                    <div class="video-wrapper">
+                        <h3 class="video-title">${l.title}</h3>
+                        ${l.videoUrl ? `<div class="video-player"><iframe src="${l.videoUrl}" frameborder="0" allowfullscreen></iframe></div>` : '<p>No video.</p>'}
+                    </div>
+                </div>
+
+                <div id="t-assign" class="tab-pane">
+                    <div class="assignment-card">
+                        <h3>Practical Task</h3>
+                        <div class="assignment-content">${l.assignment}</div>
+                        
+                        ${assignStatus === 'pending' 
+                            ? `<div class="grading-box pending">
+                                 <strong>⏳ Pending Review</strong><br>
+                                 Your assignment has been submitted. You cannot take the quiz until the instructor grades it.
+                               </div>`
+                            : assignStatus === 'rejected'
+                            ? `<div class="grading-box fail">
+                                 <strong>❌ Needs Revision</strong><br>
+                                 Instructor Feedback: "${assignFeedback}"<br>
+                                 Please update and resubmit below.
+                               </div>`
+                            : isAssignApproved
+                            ? `<div class="grading-box pass">
+                                 <strong>✅ Approved!</strong><br>
+                                 Great job. You can now take the quiz.
+                               </div>`
+                            : ''
+                        }
+
+                        <div id="input-area" style="${(assignStatus === 'pending' || isAssignApproved) ? 'display:none' : 'display:block'}">
+                            <textarea class="assignment-textarea" id="assign-text" placeholder="Type your answer here..."></textarea>
+                            <button class="btn assignment-submit">Submit for Grading</button>
+                            <div id="assign-error" style="margin-top:10px; color:red;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="t-quiz" class="tab-pane">
+                    ${quizLocked 
+                        ? `<div class="assignment-card" style="text-align:center; padding:40px;">
+                                <h3 style="color:#999;">🔒 Quiz Locked</h3>
+                                <p>Please complete the assignment and wait for approval.</p>
+                           </div>`
+                        : `<div class="quiz-card" id="quiz-area"></div>`
+                    }
+                </div>
+
+                <div id="t-lab" class="tab-pane">
+                    <div class="video-wrapper" style="padding:0; overflow:hidden;">
+                        ${l.labEmbedUrl ? `<iframe src="${l.labEmbedUrl}" class="lab-embed" style="width:100%;height:600px;border:none;"></iframe>` : ''}
+                    </div>
+                </div>
+            `;
+
+            if(!quizLocked) renderQuiz(l.quiz, lessonProgress[id]?.quiz);
+            
+            const assignBtn = el.querySelector('.assignment-submit');
+            if(assignBtn) assignBtn.addEventListener('click', () => submitAssignment(l));
+
+            el.querySelectorAll('.tab-btn').forEach(b => {
+                b.addEventListener('click', () => {
+                    if(b.disabled) return;
+                    el.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+                    el.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+                    b.classList.add('active');
+                    document.getElementById(`t-${b.dataset.t}`).classList.add('active');
+                });
+            });
+        }
+
+        // --- SUBMIT TO DATABASE ---
+        async function submitAssignment(lesson) {
+            const txt = document.getElementById('assign-text');
+            const btn = document.querySelector('.assignment-submit');
+            const err = document.getElementById('assign-error');
+            const answer = txt.value.trim();
+
+            if(answer.length < 50) {
+                err.textContent = "Answer is too short (min 50 chars).";
+                return;
+            }
+
+            btn.textContent = "Submitting...";
+            btn.disabled = true;
+
+            // Insert into assignment_submissions
+            const { error } = await supabase
+                .from('assignment_submissions')
+                .insert({
+                    user_id: currentUser.id,
+                    user_email: currentUser.email,
+                    course_id: courseId,
+                    lesson_id: currentId,
+                    submission_text: answer,
+                    status: 'pending'
+                });
+
+            if(error) {
+                console.error(error);
+                err.textContent = "Error saving assignment. Please try again.";
+                btn.disabled = false;
+                btn.textContent = "Submit for Grading";
+                return;
+            }
+
+            // Update local state so UI refreshes instantly
+            submissions[currentId] = { status: 'pending' };
+            renderLesson(currentId); // Re-render to show "Pending" box
+        }
+
+        function renderQuiz(qData, isAlreadyDone) {
+            const area = document.getElementById('quiz-area');
+            if (!qData || qData.length === 0) {
+                area.innerHTML = "<p>No quiz for this lesson.</p>";
+                return;
+            }
+            
+            if (isAlreadyDone) {
+                area.innerHTML = `<h3 style="color:green;">Quiz Passed! ✅</h3><p>You have already completed this quiz.</p>`;
+                return;
+            }
+            
+            let h = '';
+            qData.forEach((q, i) => {
+                h += `<div class="quiz-item"><span class="quiz-q">${i+1}. ${q.q}</span>`;
+                h += `<div class="quiz-options">`;
+                q.a.forEach(o => {
+                    h += `<label class="quiz-label">
+                            <input type="radio" name="q${i}" value="${o}"> ${o}
+                          </label>`;
+                });
+                h += `</div></div>`;
+            });
+            h += `<button id="sub-quiz" class="btn">Submit Quiz</button><p id="q-msg" style="margin-top:15px;font-weight:600;"></p>`;
+            area.innerHTML = h;
+
+            document.getElementById('sub-quiz').addEventListener('click', () => {
+                let s = 0;
+                let all = true;
+                qData.forEach((q, i) => {
+                    const c = document.querySelector(`input[name="q${i}"]:checked`);
+                    if(!c) all = false;
+                    else if(c.value === q.correct) s++;
+                });
+                const m = document.getElementById('q-msg');
+                if(!all) return m.textContent = "Please answer all questions.";
+                
+                if(s === qData.length) {
+                    m.textContent = "Passed! ✅"; m.style.color = "green";
+                    saveMasterProgress(currentId, true, true, true); // Save Quiz + Assignment done
+                    
+                    document.querySelectorAll('#quiz-area input').forEach(i => i.disabled = true);
+                    document.getElementById('sub-quiz').disabled = true;
+                    document.getElementById('sub-quiz').textContent = "Passed ✅";
+                } else {
+                    m.textContent = `Score: ${s}/${qData.length}. Try again.`; m.style.color = "red";
+                }
+            });
+        }
+
+        // Helper to find Module ID
+        function getModuleId(lessonId) {
+            for (const mod of modules) {
+                if (mod.lessons.find(l => l.id === lessonId)) return mod.id;
+            }
+            return null;
+        }
+
+        // --- SAVE FINAL PROGRESS ---
+        // This is called when Quiz is passed (since Assignment must already be approved to see quiz)
+        async function saveMasterProgress(lessonId, isCompleted, quizStatus, assignStatus) {
+            const moduleId = getModuleId(lessonId); 
+            
+            const { error } = await supabase.from('user_progress').upsert({
+                user_id: currentUser.id,
+                course_id: courseId,
+                module_id: moduleId,
+                video_id: lessonId,      
+                is_completed: isCompleted,
+                quiz_complete: quizStatus,       
+                assignment_complete: assignStatus 
+            }, { onConflict: 'user_id, course_id, video_id' });
+
+            if (error) console.error('Error saving progress:', error);
+
+            if (isCompleted) {
+                completed.add(lessonId);
+                updateProgress();
+                renderSidebar(); // Update tick
+            }
+        }
+
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            await supabase.auth.signOut();
+            window.location.href = '/login';
+        });
+
+        document.getElementById('cert-btn').addEventListener('click', async (e) => {
+            e.target.textContent = "Generating...";
+            const { data: { session } } = await supabase.auth.getSession();
+            const res = await fetch(`/api/generate-certificate?course=${courseId}`, { headers: { 'Authorization': `Bearer ${session.access_token}` } });
+            if(res.ok) {
+                const blob = await res.blob();
+                const a = document.createElement('a');
+                a.href = window.URL.createObjectURL(blob);
+                a.download = "Certificate.pdf";
+                a.click();
+            }
+            e.target.textContent = "Download";
+        });
+
+        init();
+    </script>
+</body>
+</html>

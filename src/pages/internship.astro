@@ -1,0 +1,341 @@
+---
+// src/pages/internship.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Internships & Bootcamps">
+  <style>
+    /* --- PAGE SPECIFIC STYLES --- */
+    :root {
+      --hero-height: 60vh;
+      --card-shadow: 0 10px 20px rgba(0,0,0,0.08);
+      --hover-shadow: 0 15px 30px rgba(0,0,0,0.12);
+    }
+
+    /* HERO SECTION */
+    .hero {
+      position: relative;
+      height: 400px;
+      background: linear-gradient(rgba(22, 27, 69, 0.8), rgba(22, 27, 69, 0.7)), url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+      margin-bottom: 3rem;
+    }
+
+    .hero-content h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .hero-content p {
+      font-size: 1.25rem;
+      max-width: 700px;
+      margin: 0 auto;
+      opacity: 0.9;
+    }
+
+    /* GENERAL TEXT LINKS */
+    .text-link {
+      color: var(--color-accent);
+      text-decoration: underline;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .text-link:hover {
+      color: var(--color-primary);
+    }
+
+    /* TRACKS GRID */
+    .tracks-section {
+      padding: 4rem 0;
+      background-color: #f8f9fa;
+    }
+    
+    .tracks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .track-card {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 16px;
+      box-shadow: var(--card-shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-top: 5px solid var(--color-accent);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .track-card:hover {
+      transform: translateY(-10px);
+      box-shadow: var(--hover-shadow);
+    }
+
+    .track-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .track-card h3 {
+      color: var(--color-primary);
+      margin-bottom: 0.5rem;
+      font-size: 1.5rem;
+    }
+
+    .track-card p {
+      color: #555;
+      line-height: 1.6;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .tech-stack {
+      font-size: 0.85rem;
+      background: #eef5ff;
+      color: var(--color-primary);
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+
+    /* HOW IT WORKS */
+    .process-section {
+      padding: 5rem 0;
+    }
+
+    .steps-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      margin-top: 3rem;
+    }
+
+    .step-item {
+      flex: 1;
+      min-width: 250px;
+      text-align: center;
+      position: relative;
+    }
+
+    .step-number {
+      background: var(--color-primary);
+      color: white;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin: 0 auto 1.5rem auto;
+      box-shadow: 0 5px 15px rgba(22, 27, 69, 0.3);
+    }
+
+    .step-item h4 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: var(--color-primary);
+    }
+
+    /* CTA / APPLICATION BOX */
+    .cta-section {
+      background: white;
+      padding: 4rem 0;
+    }
+
+    .cta-box {
+      background: linear-gradient(135deg, var(--color-primary), #2a3270);
+      border-radius: 20px;
+      padding: 3rem;
+      text-align: center;
+      color: white;
+      box-shadow: var(--hover-shadow);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .cta-box h2 {
+      color: white;
+      margin-bottom: 1rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-apply {
+      background: var(--color-accent); /* Light Blue */
+      color: white;
+      padding: 15px 40px;
+      border-radius: 50px;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: transform 0.2s, background 0.2s;
+      border: 2px solid var(--color-accent);
+    }
+
+    .btn-apply:hover {
+      transform: scale(1.05);
+      background: transparent;
+    }
+
+    .btn-secondary-outline {
+      background: transparent;
+      color: white;
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 1rem;
+      border: 2px solid rgba(255,255,255,0.5);
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-secondary-outline:hover {
+      border-color: white;
+      background: rgba(255,255,255,0.1);
+    }
+
+    @media (max-width: 768px) {
+      .hero-content h1 { font-size: 2rem; }
+      .cta-buttons { flex-direction: column; }
+    }
+  </style>
+
+  <section class="hero">
+    <div class="container hero-content">
+      <h1>Internships & Bootcamps</h1>
+      <p>Gain practical experience, build a professional portfolio, and get job-ready with our immersive programs.</p>
+    </div>
+  </section>
+
+  <section class="tracks-section">
+    <div class="container">
+      <h2 class="section-title text-center" style="color: var(--color-primary);">Choose Your Path</h2>
+      <p class="text-center" style="max-width: 600px; margin: 0 auto 2rem auto;">Our tracks are designed to take you from beginner to industry-ready in weeks.</p>
+      
+      <div class="tracks-grid">
+        <div class="track-card">
+          <div>
+            <span class="track-icon">☁️</span>
+            <h3>Cloud Computing</h3>
+            <p>Master cloud fundamentals, deployment strategies, and Infrastructure as Code.</p>
+          </div>
+          <div class="tech-stack">Tools: AWS, Firebase, Heroku, Docker</div>
+        </div>
+
+        <div class="track-card">
+          <div>
+            <span class="track-icon">📊</span>
+            <h3>Data Analytics</h3>
+            <p>Learn to clean, analyze, and visualize data to drive business decisions.</p>
+          </div>
+          <div class="tech-stack">Tools: Python, Pandas, SQL, Power BI</div>
+        </div>
+
+        <div class="track-card">
+          <div>
+            <span class="track-icon">🤖</span>
+            <h3>RPA Automation</h3>
+            <p>Build bots to automate repetitive tasks and streamline business workflows.</p>
+          </div>
+          <div class="tech-stack">Tools: UiPath, Power Automate, Low-Code</div>
+        </div>
+
+        <div class="track-card">
+          <div>
+            <span class="track-icon">💻</span>
+            <h3>Web Development</h3>
+            <p>Build modern, responsive websites and single-page applications from scratch.</p>
+          </div>
+          <div class="tech-stack">Tools: React, Astro, Node.js, Supabase</div>
+        </div>
+        <div class="track-card">
+  <div>
+    <span class="track-icon">🛠️</span>
+    <h3>IT Support</h3>
+    <p>Master hardware troubleshooting, operating systems, and networking to solve technical issues effectively.</p>
+  </div>
+  <div class="tech-stack">Tools: Windows, Linux, Active Directory, Networking</div>
+</div>
+
+<div class="track-card">
+  <div>
+    <span class="track-icon">📋</span>
+    <h3>Business Analysis</h3>
+    <p>Bridge the gap between business needs and IT solutions through requirements gathering and process mapping.</p>
+  </div>
+  <div class="tech-stack">Tools: Excel, SQL, BPMN, Jira, Visio</div>
+</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="process-section">
+    <div class="container">
+      <h2 class="section-title text-center" style="color: var(--color-primary);">How It Works</h2>
+      
+      <div class="steps-container">
+        <div class="step-item">
+          <div class="step-number">1</div>
+          <h4>Apply Online</h4>
+          <p>Fill out our <a href="/my-courses/apply" class="text-link">application form</a> to share your background and interests.</p>
+        </div>
+        <div class="step-item">
+          <div class="step-number">2</div>
+          <h4>Screening</h4>
+          <p>Complete a short logic or coding assessment to verify your readiness.</p>
+        </div>
+        <div class="step-item">
+          <div class="step-number">3</div>
+          <h4>Get Assigned</h4>
+          <p>We match you with a mentor and a real-world partner micro-project.</p>
+        </div>
+        <div class="step-item">
+          <div class="step-number">4</div>
+          <h4>Certified</h4>
+          <p>Submit your project for review and receive your industry certification.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-box">
+        <h2>Ready to Launch Your Career?</h2>
+        <p>Join a community of learners and start building your future today.</p>
+        
+        <div class="cta-buttons">
+          <a href="/work-readiness#apply" class="btn-apply">Apply Now</a>
+          <a href="/work-readiness" class="btn-secondary-outline">View Active Projects</a>
+        </div>
+        
+        <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.8;">
+          Already enrolled? <a href="/login" style="color: white; text-decoration: underline;">Log in here</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>

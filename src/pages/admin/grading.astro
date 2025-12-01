@@ -1,0 +1,109 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+    import.meta.env.PUBLIC_SUPABASE_URL,
+    import.meta.env.SUPABASE_SERVICE_KEY
+);
+
+// Fetch only pending submissions
+const { data: submissions, error } = await supabase
+    .from('assignment_submissions')
+    .select('*')
+    .eq('status', 'pending')
+    .order('created_at', { ascending: false });
+---
+
+<BaseLayout title="Instructor Grading Portal">
+    <style>
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        h1 { color: #161B45; margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        
+        .card {
+            background: white;
+            border: 1px solid #EAEAF2;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .meta { display: flex; justify-content: space-between; margin-bottom: 15px; color: #666; font-size: 0.9rem; font-weight: 600; }
+        .student { color: #469BD1; }
+
+        .answer {
+            background: #F9FAFB;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #161B45;
+            margin-bottom: 20px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            color: #333;
+        }
+
+        .controls { display: flex; gap: 10px; align-items: center; }
+        input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
+        
+        button { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 700; color: white; }
+        .btn-approve { background: #10B981; }
+        .btn-reject { background: #EF4444; }
+        .btn-approve:hover { background: #059669; }
+    </style>
+
+    <div class="container">
+        <h1>Pending Assignments ({submissions?.length || 0})</h1>
+
+        {submissions?.length === 0 ? (
+            <p style="text-align:center; color:#888;">All caught up! No assignments to grade.</p>
+        ) : (
+            submissions.map(sub => (
+                <div class="card" id={`card-${sub.id}`}>
+                    <div class="meta">
+                        <span class="student">{sub.user_email}</span>
+                        <span>{sub.course_id} • {sub.lesson_id}</span>
+                    </div>
+                    
+                    <div class="answer">{sub.submission_text}</div>
+
+                    <div class="controls">
+                        <input type="text" id={`feedback-${sub.id}`} placeholder="Write feedback here..." />
+                        <button class="btn-approve" onclick={`grade('${sub.id}', 'approved')`}>Approve</button>
+                        <button class="btn-reject" onclick={`grade('${sub.id}', 'rejected')`}>Reject</button>
+                    </div>
+                </div>
+            ))
+        )}
+    </div>
+
+    <script is:inline>
+        async function grade(id, status) {
+            const feedback = document.getElementById(`feedback-${id}`).value;
+            const card = document.getElementById(`card-${id}`);
+
+            if (!feedback && status === 'rejected') {
+                alert("Please provide feedback when rejecting.");
+                return;
+            }
+
+            card.style.opacity = '0.5';
+            card.style.pointerEvents = 'none';
+
+            const response = await fetch('/api/grade-action', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, status, feedback })
+            });
+
+            if (response.ok) {
+                card.remove();
+                alert("Graded successfully!");
+            } else {
+                alert("Error grading assignment.");
+                card.style.opacity = '1';
+                card.style.pointerEvents = 'auto';
+            }
+        }
+    </script>
+</BaseLayout>

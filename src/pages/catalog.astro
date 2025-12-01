@@ -1,0 +1,395 @@
+---
+// src/pages/catalog.astro
+
+// 1. WORK READINESS COURSES (Foundational)
+const workReadinessCourses = [
+  {
+    title: "Digital Literacy & IT Skills",
+    desc: "For beginners looking to build a strong foundation in modern computing, internet safety, and office productivity.",
+    topics: ["Basic Computer Skills", "Microsoft Office Suite", "Internet Safety", "Email Etiquette"],
+    cert: "Microsoft Office Specialist (MOS)",
+    level: "Beginner"
+  },
+  {
+    title: "Financial Literacy",
+    desc: "Understand and manage personal and business finances with confidence. Essential for freelancers and gig workers.",
+    topics: ["Finance Fundamentals", "Personal Budgeting", "Tax Basics"],
+    cert: "TechBridge Financial Literacy Certificate",
+    level: "Beginner"
+  },
+  {
+    title: "Entrepreneurship & Startups",
+    desc: "A practical guide to launching, managing, and scaling a successful business venture.",
+    topics: ["Lean Canvas", "Business Planning", "Pitching", "Basic Sales"],
+    cert: "TechBridge Entrepreneurship Certification",
+    level: "Beginner/Intermediate"
+  },
+  {
+    title: "Business Management Essentials",
+    desc: "Optimize workflows and lead teams effectively with modern management and soft skills.",
+    topics: ["Leadership & Teams", "Process Optimization", "Conflict Resolution"],
+    cert: "Certified Business Manager (CBM) Prep",
+    level: "Intermediate"
+  }
+];
+
+// 2. INTERNSHIPS & BOOTCAMPS (Advanced/Technical)
+const bootcampCourses = [
+  {
+    title: "Full-Stack Web Development",
+    desc: "Build and deploy modern, responsive web applications from end-to-end using React, Node.js, and Supabase.",
+    topics: ["Frontend Development", "Backend Development", "Database Management", "API Integration"],
+    cert: "TechBridge Certified Full Stack Developer",
+    level: "Advanced"
+  },
+  {
+    title: "Data Science & AI Pathway",
+    desc: "Turn raw data into actionable insights using Python, SQL, Pandas, and Machine Learning models.",
+    topics: ["Data Analysis", "Python Programming", "Machine Learning Basics", "Visualization"],
+    cert: "Google Data Analytics Certificate Support",
+    level: "Advanced"
+  },
+  {
+    title: "Cloud Computing & DevOps",
+    desc: "Streamline software delivery and infrastructure management with cloud technologies like AWS and Docker.",
+    topics: ["AWS Core Services", "Docker & Containers", "CI/CD Pipelines"],
+    cert: "AWS Certified Solutions Architect Prep",
+    level: "Advanced"
+  },
+  {
+    title: "Cybersecurity Program",
+    desc: "Protect digital assets from modern threats with advanced security practices and ethical hacking techniques.",
+    topics: ["Network Security", "Ethical Hacking", "Risk Management"],
+    cert: "CompTIA Security+ Prep",
+    level: "Advanced"
+  },
+  {
+    title: "Robotic Process Automation (RPA)",
+    desc: "Automate repetitive business processes using leading RPA tools like UiPath and Power Automate.",
+    topics: ["RPA Basics", "UiPath Studio", "Workflow Automation"],
+    cert: "UiPath RPA Developer Certification",
+    level: "Advanced"
+  },
+  {
+    title: "IT Support Professional",
+    desc: "Master hardware troubleshooting, operating systems, and networking to solve technical issues.",
+    topics: ["Hardware Troubleshooting", "Networking Fundamentals", "OS Management"],
+    cert: "Google IT Support Professional Certificate",
+    level: "Intermediate"
+  },
+   {
+    title: "Business Analysis",
+    desc: "Bridge the gap between IT and business by gathering requirements and process mapping.",
+    topics: ["Requirements Gathering", "Process Mapping (BPMN)", "Stakeholder Management"],
+    cert: "ECBA Prep",
+    level: "Advanced"
+  },
+  {
+    title: "Project Management (PMP)",
+    desc: "Deliver projects on time and within budget using professional Agile and Waterfall methodologies.",
+    topics: ["PM Basics", "Agile/Scrum", "Risk Management"],
+    cert: "PMP Certification Prep",
+    level: "Advanced"
+  }
+];
+---
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Course Catalog | TechBridge Academy</title>
+  <link rel="icon" href="/img/0.png" type="image/png">
+  <style>
+    :root {
+        --primary: #161B45;
+        --accent: #469BD1;
+        --success: #10B981;
+        --warning: #F59E0B;
+        --bg: #F9FAFB;
+        --text: #1F2937;
+    }
+
+    body { 
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        background: var(--bg); 
+        color: var(--text); 
+        margin: 0; 
+        padding: 0; 
+        line-height: 1.6; 
+    }
+
+    .container { 
+        max-width: 1200px; 
+        margin: auto; 
+        padding: 40px 20px; 
+    }
+
+    header { 
+        text-align: center; 
+        margin-bottom: 60px; 
+        padding-bottom: 30px;
+        border-bottom: 1px solid #E5E7EB;
+    }
+
+    header h1 { 
+        font-size: 2.8rem; 
+        color: var(--primary); 
+        margin-bottom: 15px; 
+    }
+
+    header p { 
+        font-size: 1.2rem; 
+        color: #4B5563; 
+        max-width: 700px; 
+        margin: 0 auto; 
+    }
+
+    /* SECTIONS */
+    .course-category { 
+        margin-bottom: 80px; 
+    }
+
+    .category-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .category-header h2 { 
+        font-size: 2.2rem; 
+        color: var(--primary); 
+        margin: 0;
+    }
+
+    .category-badge {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Work Readiness Styles */
+    .work-ready-badge { background: #ECFDF5; color: var(--success); border: 1px solid var(--success); }
+    .work-ready-border { border-top: 4px solid var(--success); }
+
+    /* Bootcamp Styles */
+    .bootcamp-badge { background: #EFF6FF; color: var(--accent); border: 1px solid var(--accent); }
+    .bootcamp-border { border-top: 4px solid var(--accent); }
+
+    /* GRID */
+    .grid { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); 
+        gap: 30px; 
+    }
+
+    /* CARDS */
+    .course-card { 
+        background: #fff; 
+        padding: 30px; 
+        border-radius: 16px; 
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
+        transition: transform 0.2s ease, box-shadow 0.2s ease; 
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .course-card:hover { 
+        transform: translateY(-5px); 
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); 
+    }
+
+    .course-card h3 { 
+        font-size: 1.4rem; 
+        color: var(--primary); 
+        margin-top: 0;
+        margin-bottom: 15px; 
+    }
+
+    .level-tag {
+        display: inline-block;
+        font-size: 0.75rem;
+        padding: 2px 8px;
+        border-radius: 4px;
+        background: #F3F4F6;
+        color: #6B7280;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .course-card p { 
+        margin-bottom: 20px; 
+        color: #4B5563; 
+        flex-grow: 1;
+    }
+
+    .topics-box {
+        background: #F9FAFB;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .topics-title {
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #9CA3AF;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .course-card ul { 
+        list-style: none; 
+        padding: 0; 
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .course-card li { 
+        font-size: 0.85rem;
+        background: #fff;
+        border: 1px solid #E5E7EB;
+        padding: 4px 10px;
+        border-radius: 15px;
+        color: #374151;
+    }
+
+    .cert-info {
+        font-size: 0.9rem;
+        color: var(--primary);
+        margin-bottom: 25px;
+        padding-top: 15px;
+        border-top: 1px solid #E5E7EB;
+    }
+
+    .cert-info strong { display: block; margin-bottom: 4px; }
+
+    .btn { 
+        text-align: center;
+        padding: 12px; 
+        border-radius: 8px; 
+        font-weight: 700; 
+        text-decoration: none; 
+        transition: opacity 0.2s; 
+        display: block;
+    }
+    
+    .btn-wr { background: var(--success); color: white; }
+    .btn-bc { background: var(--accent); color: white; }
+    
+    .btn:hover { opacity: 0.9; }
+
+    /* Download Button */
+    .download-section {
+        text-align: center;
+        margin-top: 60px;
+        padding-top: 40px;
+        border-top: 2px dashed #E5E7EB;
+    }
+    
+    .download-btn { 
+        background: var(--primary); 
+        color: #fff; 
+        padding: 15px 30px; 
+        font-size: 1.1rem; 
+        border-radius: 30px; 
+        text-decoration: none; 
+        display: inline-block; 
+        font-weight: 600;
+    }
+    .download-btn:hover { background: #2a3270; }
+
+    @media(max-width: 768px){
+        .category-header { flex-direction: column; align-items: flex-start; gap: 5px; }
+        header h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Training Academy Catalog</h1>
+      <p>Select a learning path below. We offer foundational skills for work-readiness and advanced technical tracks for specialized careers.</p>
+    </header>
+
+    <div class="course-category">
+      <div class="category-header">
+          <h2>Work-Readiness Program</h2>
+          <span class="category-badge work-ready-badge">Foundational</span>
+      </div>
+      <p style="margin-bottom: 30px; color: #666; max-width: 800px;">
+        These courses are designed to prepare you for the modern workplace. They focus on essential digital skills, financial literacy, and soft skills required to succeed in any job environment.
+      </p>
+      
+      <div class="grid">
+        {workReadinessCourses.map(course => (
+          <div class="course-card work-ready-border">
+            <span class="level-tag">{course.level}</span>
+            <h3>{course.title}</h3>
+            <p>{course.desc}</p>
+            
+            <div class="topics-box">
+                <span class="topics-title">Key Topics</span>
+                <ul>
+                {course.topics.map(topic => <li>{topic}</li>)}
+                </ul>
+            </div>
+            
+            <div class="cert-info">
+                <strong>Certification:</strong> {course.cert}
+            </div>
+            
+            <a href="/work-readiness" class="btn btn-wr">Join Work-Readiness</a>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="course-category">
+      <div class="category-header">
+          <h2>Internships & Bootcamps</h2>
+          <span class="category-badge bootcamp-badge">Advanced / Technical</span>
+      </div>
+      <p style="margin-bottom: 30px; color: #666; max-width: 800px;">
+        Intensive, project-based tracks designed to build specialized technical skills. These programs include real-world partner projects and prepare you for specific tech careers.
+      </p>
+
+      <div class="grid">
+        {bootcampCourses.map(course => (
+          <div class="course-card bootcamp-border">
+            <span class="level-tag">{course.level}</span>
+            <h3>{course.title}</h3>
+            <p>{course.desc}</p>
+            
+            <div class="topics-box">
+                <span class="topics-title">Key Skills</span>
+                <ul>
+                {course.topics.map(topic => <li>{topic}</li>)}
+                </ul>
+            </div>
+            
+            <div class="cert-info">
+                <strong>Certification:</strong> {course.cert}
+            </div>
+            
+            <a href="/internship" class="btn btn-bc">Apply for Bootcamp</a>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="download-section">
+        <p>Need to share this with a partner or sponsor?</p>
+        <a href="#" onclick="window.print()" class="download-btn">Download Catalog as PDF</a>
+    </div>
+  </div>
+</body>
+</html>

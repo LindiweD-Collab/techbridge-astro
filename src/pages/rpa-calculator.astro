@@ -1,0 +1,89 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="RPA Savings Calculator">
+    <main>
+        <section class="page-header page-header-rpa">
+            <div class="hero-overlay"></div>
+            <div class="container">
+                <div class="hero-content" style="max-width: 100%; text-align: center;">
+                    <h1>RPA Savings Calculator</h1>
+                    <p>Discover how much time and money you can save by automating manual tasks.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container" style="max-width: 960px;">
+                <div class="rpa-grid">
+                    <div class="rpa-card">
+                        <h3 class="text-center" style="margin-bottom: 2rem;">Describe a Repetitive Task</h3>
+                        <form id="rpa-form">
+                            <div class="form-group">
+                                <label for="task-time">Time to complete the task once (in minutes):</label>
+                                <input type="number" id="task-time" value="15" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="task-frequency">How many times is this task done per week?</label>
+                                <input type="number" id="task-frequency" value="20" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="employee-count">Number of employees doing this task:</label>
+                                <input type="number" id="employee-count" value="2" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="employee-cost">Avg. employee hourly cost (in Rands):</label>
+                                <input type="number" id="employee-cost" value="150" required>
+                            </div>
+                            <button type="submit" class="button primary" style="width: 100%; margin-top: 1rem;">Calculate Savings</button>
+                        </form>
+                    </div>
+
+                    <div class="rpa-card card-dark">
+                        <div id="rpa-results" class="text-center">
+                            <h3 style="color: white; margin-bottom: 2rem;">Potential Annual Savings</h3>
+                            <div class="result-box">
+                                <span class="result-label">Time Saved</span>
+                                <span id="time-saved" class="result-value">...</span>
+                            </div>
+                            <div class="result-box">
+                                <span class="result-label">Money Saved</span>
+                                <span id="money-saved" class="result-value">...</span>
+                            </div>
+                            <p id="results-message" style="margin-top: 2rem; color: #D1D5DB;">Fill in the form to see your potential savings.</p>
+                           <a href="/quote" id="cta-button" class="button secondary" style="display:none; margin-top: 2rem;">Automate Your Business</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const rpaForm = document.getElementById('rpa-form');
+        if (rpaForm) {
+            rpaForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const taskTime = parseFloat(document.getElementById('task-time').value);
+                const taskFrequency = parseFloat(document.getElementById('task-frequency').value);
+                const employeeCount = parseFloat(document.getElementById('employee-count').value);
+                const employeeCost = parseFloat(document.getElementById('employee-cost').value);
+
+                const weeklyMinutes = taskTime * taskFrequency * employeeCount;
+                const annualHours = (weeklyMinutes / 60) * 52;
+                const annualCost = annualHours * employeeCost;
+
+                const timeSavedEl = document.getElementById('time-saved');
+                const moneySavedEl = document.getElementById('money-saved');
+                const resultsMessage = document.getElementById('results-message');
+                const ctaButton = document.getElementById('cta-button');
+
+                timeSavedEl.textContent = `${annualHours.toLocaleString('en-US', {maximumFractionDigits: 0})} Hours / Year`;
+                moneySavedEl.textContent = `R ${annualCost.toLocaleString('en-US', {maximumFractionDigits: 0})}`;
+                resultsMessage.style.display = 'none';
+                ctaButton.style.display = 'inline-block';
+            });
+        }
+    </script>
+</BaseLayout>

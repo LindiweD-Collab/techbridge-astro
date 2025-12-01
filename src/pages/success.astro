@@ -1,0 +1,17 @@
+---
+const course = Astro.url.searchParams.get("course") || "your course";
+---
+<html lang="en">
+  <head>
+    <title>Payment Successful</title>
+  </head>
+<body style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 2rem;">
+  <h1>🎉 Payment Successful</h1>
+  <p>Thank you for enrolling in <strong>{course}</strong>!</p>
+  <p>Your receipt and course details have been emailed to you.</p>
+
+  <a href="/" style="display:inline-block; margin-top:1rem; color:white; background:#0047b3; padding:.8rem 1.2rem; border-radius:6px;">
+    Return Home
+  </a>
+</body>
+</html>

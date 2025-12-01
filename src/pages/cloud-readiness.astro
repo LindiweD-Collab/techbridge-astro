@@ -1,0 +1,283 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Cloud Readiness Calculator">
+    <style>
+        .page-header-services {
+            background: linear-gradient(rgba(22, 27, 69, 0.8), rgba(22, 27, 69, 0.8)), url('https://via.placeholder.com/1920x400') center/cover no-repeat;
+            padding: 100px 0;
+            color: var(--color-white);
+        }
+        .page-header-services h1 { color: var(--color-white); }
+        .section-divider { width: 80px; height: 4px; background-color: var(--color-accent); margin: 1rem auto; border-radius: 2px; }
+        .card {
+            background-color: var(--color-white);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--color-border);
+        }
+        .progress-bar-container {
+            width: 100%;
+            height: 10px;
+            background-color: var(--color-border);
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+        }
+        .progress-bar-container.large { height: 30px; border-radius: 15px; }
+        .progress-bar-fill {
+            height: 100%;
+            width: 0;
+            background-color: var(--color-accent);
+            border-radius: 5px;
+            transition: width 0.4s ease-in-out, background-color 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-white);
+            font-weight: 600;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        @media (min-width: 768px) {
+            .options-grid { grid-template-columns: 1fr 1fr; }
+        }
+        .option-btn {
+            display: block;
+            width: 100%;
+            padding: 1.5rem 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            background-color: var(--color-white);
+            color: var(--color-secondary);
+            border: 2px solid var(--color-border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .option-btn:hover {
+            border-color: var(--color-accent);
+            background-color: #f7faff;
+            transform: translateY(-3px);
+        }
+        .display-5 { font-size: 3rem; margin-bottom: 1rem; }
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all var(--transition);
+        }
+        .btn-primary { background-color: var(--color-primary); color: var(--color-white); }
+        .btn-primary:hover { background-color: var(--color-secondary); }
+        .btn-secondary { background-color: transparent; color: var(--color-primary); border-color: var(--color-primary); }
+        .btn-secondary:hover { background-color: var(--color-primary); color: var(--color-white); }
+    </style>
+    
+    <main>
+        <section class="page-header-services">
+            <div class="container text-center fade-in-up">
+                <h1>Cloud Readiness Calculator</h1>
+                <div class="section-divider"></div>
+                <p style="max-width: 700px; margin: 0 auto; font-size: 1.125rem;">Answer a few simple questions to get an instant analysis of your business's cloud potential and estimated costs.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container" style="max-width: 800px;">
+                <div class="card" style="padding: 2.5rem;">
+                    <div id="quiz-container">
+                        <div id="question-area" class="text-center">
+                            <p class="text-muted" id="question-counter"></p>
+                            <h3 id="question-text" style="margin-bottom: 2rem;"></h3>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill" id="progress-bar"></div>
+                            </div>
+                            <div id="options-container" class="options-grid">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="results-container" class="text-center fade-in-up" style="display:none;">
+                        <h2 style="margin-bottom: 2rem;">Your Cloud Readiness Report</h2>
+                        
+                        <div style="margin: 2.5rem 0;">
+                            <h4 class="text-muted">Readiness Score</h4>
+                            <div class="progress-bar-container large">
+                                <div class="progress-bar-fill" id="readiness-bar">
+                                    <span id="readiness-text"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin: 2.5rem 0;">
+                            <h4 class="text-muted">Estimated Monthly Cost</h4>
+                            <h3 id="cost-text" class="display-5" style="font-weight: 700; color: var(--color-primary);"></h3>
+                        </div>
+
+                        <div style="margin: 2.5rem 0;">
+                           <h4 class="text-muted">Our Recommendation</h4>
+                           <p id="recommendation-text" style="font-size: 1.1rem;"></p>
+                        </div>
+
+                        <p style="margin-top: 2.5rem;">This report is an estimate. For a detailed and accurate quote, let's have a chat.</p>
+                        <a href="/contact" class="btn btn-primary" style="margin-right: 0.5rem;">Schedule a Free Consultation</a>
+                        <button id="restart-btn" class="btn btn-secondary">Start Over</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const questions = [
+                {
+                    question: "How many employees does your business have?",
+                    options: [
+                        { text: "1-10", score: 5, cost: 5000 },
+                        { text: "11-50", score: 4, cost: 15000 },
+                        { text: "51-200", score: 3, cost: 40000 },
+                        { text: "200+", score: 2, cost: 100000 }
+                    ]
+                },
+                {
+                    question: "How critical is remote access for your team?",
+                    options: [
+                        { text: "Essential, daily use", score: 5, cost: 10000 },
+                        { text: "Important, frequent use", score: 4, cost: 5000 },
+                        { text: "Occasionally needed", score: 3, cost: 2000 },
+                        { text: "Not important", score: 1, cost: 0 }
+                    ]
+                },
+                {
+                    question: "What is your current IT infrastructure?",
+                    options: [
+                        { text: "No dedicated servers", score: 5, cost: 2000 },
+                        { text: "On-premise servers", score: 2, cost: 20000 },
+                        { text: "Hybrid (some cloud)", score: 4, cost: 8000 },
+                        { text: "Already on the cloud", score: 5, cost: 0 }
+                    ]
+                },
+                {
+                    question: "How sensitive is the data you handle?",
+                    options: [
+                        { text: "Highly sensitive (finance, health)", score: 2, cost: 15000 },
+                        { text: "Confidential business data", score: 3, cost: 8000 },
+                        { text: "General operational data", score: 4, cost: 4000 },
+                        { text: "Publicly available data", score: 5, cost: 1000 }
+                    ]
+                },
+                {
+                    question: "What is your primary goal for moving to the cloud?",
+                    options: [
+                        { text: "Cost savings", score: 4, cost: 5000 },
+                        { text: "Improve collaboration", score: 5, cost: 3000 },
+                        { text: "Enhance security & backup", score: 3, cost: 12000 },
+                        { text: "Scalability and performance", score: 4, cost: 18000 }
+                    ]
+                }
+            ];
+
+            const quizContainer = document.getElementById('quiz-container');
+            const resultsContainer = document.getElementById('results-container');
+            const questionCounterEl = document.getElementById('question-counter');
+            const questionTextEl = document.getElementById('question-text');
+            const progressBarEl = document.getElementById('progress-bar');
+            const optionsContainerEl = document.getElementById('options-container');
+            const readinessBarEl = document.getElementById('readiness-bar');
+            const readinessTextEl = document.getElementById('readiness-text');
+            const costTextEl = document.getElementById('cost-text');
+            const recommendationTextEl = document.getElementById('recommendation-text');
+            const restartBtn = document.getElementById('restart-btn');
+
+            let currentQuestionIndex = 0;
+            let totalScore = 0;
+            let totalCost = 0;
+            const maxScore = questions.reduce((sum, q) => sum + 5, 0);
+
+            function startQuiz() {
+                currentQuestionIndex = 0;
+                totalScore = 0;
+                totalCost = 0;
+                resultsContainer.style.display = 'none';
+                quizContainer.style.display = 'block';
+                showQuestion();
+            }
+
+            function showQuestion() {
+                optionsContainerEl.innerHTML = '';
+                const currentQuestion = questions[currentQuestionIndex];
+                questionCounterEl.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+                questionTextEl.textContent = currentQuestion.question;
+                const progress = ((currentQuestionIndex) / questions.length) * 100;
+                progressBarEl.style.width = `${progress}%`;
+
+                currentQuestion.options.forEach(option => {
+                    const button = document.createElement('button');
+                    button.className = 'option-btn';
+                    button.textContent = option.text;
+                    button.onclick = () => selectAnswer(option.score, option.cost);
+                    optionsContainerEl.appendChild(button);
+                });
+            }
+
+            function selectAnswer(score, cost) {
+                totalScore += score;
+                totalCost += cost;
+                currentQuestionIndex++;
+                if (currentQuestionIndex < questions.length) {
+                    showQuestion();
+                } else {
+                    showResults();
+                }
+            }
+
+            function showResults() {
+                quizContainer.style.display = 'none';
+                resultsContainer.style.display = 'block';
+
+                const readinessPercentage = Math.round((totalScore / maxScore) * 100);
+
+                readinessBarEl.style.width = `${readinessPercentage}%`;
+                readinessTextEl.textContent = `${readinessPercentage}% Ready`;
+
+                if (readinessPercentage >= 75) {
+                    readinessBarEl.style.backgroundColor = 'var(--color-success)';
+                } else if (readinessPercentage >= 40) {
+                    readinessBarEl.style.backgroundColor = 'var(--color-warning)';
+                } else {
+                    readinessBarEl.style.backgroundColor = 'var(--color-danger)';
+                }
+
+                costTextEl.textContent = `R ${totalCost.toLocaleString('en-ZA')} / month`;
+
+                let recommendation = '';
+                if (readinessPercentage >= 75) {
+                    recommendation = "You're an excellent candidate for cloud migration! Your business is well-positioned to leverage the cloud for growth, collaboration, and efficiency. We recommend a full migration strategy.";
+                } else if (readinessPercentage >= 40) {
+                    recommendation = "Your business shows good potential for the cloud, but some areas need planning. A hybrid approach could be a great starting point, allowing you to migrate key services while keeping some infrastructure on-premise.";
+                } else {
+                    recommendation = "Moving to the cloud requires careful planning for your business. We recommend a foundational consultation to address key challenges like security and infrastructure before proceeding. A phased migration is likely the best approach.";
+                }
+                recommendationTextEl.textContent = recommendation;
+            }
+
+            restartBtn.addEventListener('click', startQuiz);
+            startQuiz();
+        });
+    </script>
+</BaseLayout>

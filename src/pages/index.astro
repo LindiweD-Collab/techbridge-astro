@@ -1,11 +1,298 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
+<BaseLayout title="TechBridge AI Solutions - Automate and Scale">
+    <style>
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
+        .tab-link.active {
+            color: var(--color-secondary); 
+            border-bottom-color: var(--color-secondary);
+        }
 
-<Layout>
-	<Welcome />
-</Layout>
+        .explore-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: var(--color-accent);
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-size: 0.9rem;
+        }
+        .explore-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(70, 155, 209, 0.3);
+            background-color: #3a8ac0;
+        }
+    </style>
+
+    <main>
+        <section class="hero-section" style="background-image: url('/img/front-view-business-people-meeting.jpg');">
+            <div class="hero-overlay"></div>
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Automate Your Business with Intelligent AI Assistants.</h1>
+                    <p>We build custom AI solutions that automate customer support, streamline internal workflows, and drive growth for businesses of all sizes.</p>
+                    <a href="#services" class="button button-primary">Explore Our AI Solutions</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="intro-grid">
+                    <div class="intro-content">
+                        <h2 class="intro-title">Streamline Your Operations. Scale Your Growth.</h2>
+                        <p>In today's competitive market, efficiency is key. TechBridge develops intelligent AI assistants that handle repetitive tasks, answer customer queries 24/7, and qualify leads, allowing your team to focus on what matters most.</p>
+                        <a href="/contact" class="button button-secondary">Get a Free Consultation</a>
+                    </div>
+                    <div class="intro-image-wrapper">
+                        <img class="intro-main-image" src="/img/OIP.webp" alt="Professionals collaborating on a digital project">
+                        <div class="intro-card-float">
+                            <p><strong>24/7</strong><br>Automated Business Operations</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="services">
+            <div class="container">
+                <h2 class="section-title text-center">Our AI Assistant Services</h2>
+                <div class="course-grid">
+                    <div class="course-card">
+                        <img src="/img/robot-handshake-human-background-futuristic-digital-age.jpg" alt="AI Customer Service Bot">
+                        <h3>AI Customer Service Bots</h3>
+                        <p>Engage customers instantly on your website, WhatsApp, or Facebook with smart, 24/7 AI-powered chatbots that resolve queries and improve satisfaction.</p>
+                        <ul class="card-details">
+                            <li><strong>Platform:</strong> Web, WhatsApp, FB</li>
+                            <li><strong>Best for:</strong> Support & FAQs</li>
+                        </ul>
+                        <div class="card-footer">
+                            <span class="card-price">From R5,000</span>
+                            <a href="/contact" class="button secondary">Learn More</a>
+                        </div>
+                    </div>
+                    <div class="course-card">
+                        <img src="/img/representation-user-experience-interface-design.jpg" alt="Internal Workflow Automation">
+                        <h3>Internal Workflow Automation</h3>
+                        <p>Automate internal processes for HR, IT, or finance. Handle tasks like employee onboarding, IT support tickets, and report generation seamlessly.</p>
+                        <ul class="card-details">
+                            <li><strong>Integrations:</strong> Email, Slack, Databases</li>
+                            <li><strong>Best for:</strong> HR, IT & Operations</li>
+                        </ul>
+                        <div class="card-footer">
+                            <span class="card-price">From R8,500</span>
+                            <a href="/contact" class="button secondary">Learn More</a>
+                        </div>
+                    </div>
+                    <div class="course-card">
+                        <img src="/img/laptops-transfer-downloading-data-cloud-computing-network-technology-infrastructure-data-diagram-icon-symbol-3d-rendering.jpg" alt="AI Sales Assistant">
+                        <h3>AI Sales & Lead Generation</h3>
+                        <p>Qualify leads, book meetings, and answer prospect questions automatically, ensuring your sales team only talks to the most qualified buyers.</p>
+                        <ul class="card-details">
+                            <li><strong>Features:</strong> Lead Scoring, CRM Sync</li>
+                            <li><strong>Best for:</strong> Sales & Marketing</li>
+                        </ul>
+                        <div class="card-footer">
+                            <span class="card-price">From R7,000</span>
+                            <a href="/contact" class="button secondary">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section section-gray">
+            <div class="container">
+                <h2 class="section-title text-center">AI Solutions for Every Business Need</h2>
+                <div class="tabs-wrapper">
+                    <ul class="tabs-nav">
+                        <li><a href="#tab-support" class="tab-link active" data-tab="tab-support">Customer Support</a></li>
+                        <li><a href="#tab-hr" class="tab-link" data-tab="tab-hr">HR & Operations</a></li>
+                        <li><a href="#tab-sales" class="tab-link" data-tab="tab-sales">Sales & Marketing</a></li>
+                        <li><a href="#tab-data" class="tab-link" data-tab="tab-data">Data & Reporting</a></li>
+                    </ul>
+                    <div class="tabs-content">
+                        <div id="tab-support" class="tab-pane active">
+                            <h4>AI-Powered Customer Support</h4>
+                            <p>Provide instant, 24/7 answers to common customer questions. Our AI bots can handle a high volume of inquiries, reducing wait times and freeing up your human agents to focus on complex issues.</p>
+                            <div class="tab-details">
+                                <span>Key Benefit: <strong>Increase customer satisfaction by over 30%</strong></span>
+                                <a href="/solutions?service=it-support" class="explore-btn">
+                                    Explore Support Solutions <span>&rarr;</span>
+                                </a>
+                                
+                            </div>
+                        </div>
+                        <div id="tab-hr" class="tab-pane">
+                             <h4>Automated HR & Operations</h4>
+                            <p>Streamline your internal processes, from onboarding new hires and answering policy questions to managing IT helpdesk tickets. Our workflow bots ensure tasks are done consistently and efficiently.</p>
+                            <div class="tab-details">
+                                <span>Key Benefit: <strong>Reduce administrative workload by up to 60%</strong></span>
+                                <a href="/solutions?service=automation" class="explore-btn">
+                                    Explore Automation <span>&rarr;</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div id="tab-sales" class="tab-pane">
+                             <h4>Intelligent Sales & Marketing Automation</h4>
+                            <p>Capture and qualify leads around the clock. Our AI assistants can engage website visitors, ask qualifying questions, book demos, and sync lead data directly into your CRM, boosting your pipeline.</p>
+                            <div class="tab-details">
+                                <span>Key Benefit: <strong>Increase qualified leads by up to 40%</strong></span>
+                             <a href="/solutions?service=crm" class="explore-btn">
+                                    Explore Sales Tools <span>&rarr;</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div id="tab-data" class="tab-pane">
+                             <h4>Automated Data & Reporting</h4>
+                            <p>Connect to your data sources and let an AI assistant generate daily, weekly, or monthly reports on demand. Simply ask for the metrics you need, and the bot will deliver the insights in seconds.</p>
+                            <div class="tab-details">
+                                <span>Key Benefit: <strong>Get real-time business insights instantly</strong></span>
+                               <a href="/solutions?service=security" class="explore-btn">
+                                    Explore Data Solutions <span>&rarr;</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <h2 class="section-title text-center">From Our Business Clients</h2>
+                <div class="testimonial-grid">
+                    <div class="testimonial-card">
+                        <div class="testimonial-author">
+                            
+                            <div class="author-info">
+                                <strong>Naledi Molefe</strong>
+                                <span>CEO, Urban Gardens Pty Ltd</span>
+                            </div>
+                        </div>
+                        <p>"The AI assistant TechBridge built for us handles over 80% of our customer delivery queries. It's transformed our support and freed up our team to focus on growing the business."</p>
+                    </div>
+                    <div class="testimonial-card">
+                         <div class="testimonial-author">
+                            
+                            <div class="author-info">
+                                <strong>David Chen</strong>
+                                <span>Operations Manager, FinCore Analytics</span>
+                            </div>
+                        </div>
+                        <p>"Our internal HR bot has automated our entire employee onboarding process. What used to take days of manual work now takes minutes. A total game-changer for our efficiency."</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section section-gray">
+            <div class="container contact-section-grid">
+                <div class="contact-section-image">
+                    <img src="/img/unnamed.png" alt="A professional woman smiling">
+                </div>
+                <div class="contact-section-form">
+                    <h3>Ready to Automate?</h3>
+                    <p>Get in touch with our team to learn more about our AI solutions and how we can help you achieve your business goals.</p>
+                    <form id="home-contact-form" action="https://formspree.io/f/YOUR_UNIQUE_CODE" method="POST">
+                        <div class="form-group">
+                            <label for="home-name">Name*</label>
+                            <input type="text" id="home-name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="home-email">Email*</label>
+                            <input type="email" id="home-email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="home-interest">I'm interested in...</label>
+                            <select id="home-interest" name="interest">
+                                <option>AI Customer Service Bot</option>
+                                <option>Internal Workflow Automation</option>
+                                <option>AI Sales Assistant</option>
+                                <option>Other Custom Solution</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="button secondary" style="width: 100%;">Submit</button>
+                        <p class="form-status" id="home-form-status"></p>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabLinks = document.querySelectorAll('.tab-link');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+
+            tabLinks.forEach(function(link) {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+
+                    tabLinks.forEach(function(item) {
+                        item.classList.remove('active');
+                    });
+                    tabPanes.forEach(function(pane) {
+                        pane.classList.remove('active');
+                    });
+
+                    this.classList.add('active');
+                    const targetTabPaneId = this.getAttribute('data-tab'); 
+                    const targetTabPane = document.getElementById(targetTabPaneId);
+                    if (targetTabPane) {
+                        targetTabPane.classList.add('active');
+                    }
+                });
+            });
+
+            // Handle Formspree submission for home form
+            const homeForm = document.getElementById('home-contact-form');
+            if (homeForm) {
+                homeForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const status = document.getElementById('home-form-status');
+                    const data = new FormData(e.target);
+
+                    try {
+                        const response = await fetch(e.target.action, {
+                            method: 'POST',
+                            body: data,
+                            headers: { 'Accept': 'application/json' }
+                        });
+
+                        if (response.ok) {
+                            status.textContent = "Thanks for your message!";
+                            status.style.color = '#20b082';
+                            homeForm.reset();
+                        } else {
+                            status.textContent = 'Oops! There was a problem.';
+                            status.style.color = '#e55649';
+                        }
+                    } catch (error) {
+                        status.textContent = 'Oops! There was a problem.';
+                        status.style.color = '#e55649';
+                    }
+                });
+            }
+        });
+    </script>
+</BaseLayout>
+
+
+
+
+
+
+
+
+
+
+
+
