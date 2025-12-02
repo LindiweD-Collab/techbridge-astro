@@ -1185,7 +1185,6 @@ input[type="checkbox"] {
     box-shadow: 0 8px 20px rgba(0,0,0,0.08);
 }
 
-/* Status Message */
 .assignment-status {
     margin-top: 10px;
     font-weight: 600;
@@ -1195,4 +1194,36 @@ input[type="checkbox"] {
 
 .assignment-status.error {
     color: #EF4444;
+}
+.social-icons {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.social-icons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.1); 
+    border-radius: 50%; 
+    color: #ffffff;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.social-icons a:hover {
+    background-color: var(--color-accent); 
+    transform: translateY(-3px); 
+    border-color: var(--color-accent);
+}
+
+.social-icons svg {
+    fill: currentColor; 
+}
+
+.social-icons a[aria-label="Instagram"] svg {
+    fill: none; 
 }
