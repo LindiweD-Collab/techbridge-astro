@@ -69,9 +69,7 @@
                 email: email,
                 password: password,
                 options: {
-                    data: {
-                        full_name: fullName
-                    }
+                    data: { full_name: fullName }
                 }
             });
 
@@ -83,9 +81,14 @@
                     statusEl.textContent = error.message;
                 }
             } else {
-                statusEl.textContent = 'Success! Please check your email for a confirmation link.';
+               
+                statusEl.textContent = 'Success! Logging you in...';
                 statusEl.style.color = '#28a745';
-                signupForm.reset();
+                
+               
+                setTimeout(() => {
+                    window.location.href = '/my-courses/dashboard'; 
+                }, 1000);
             }
         });
     </script>
