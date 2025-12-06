@@ -1,105 +1,213 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+// ==========================================
+// CONFIGURATION: PRICING PLANS
+// ==========================================
+const PLANS = [
+  {
+    id: 'ngo',
+    name: "Non-Profit Impact",
+    audience: "For NGOs, Schools & Charities",
+    price: "R2,500",
+    frequency: "per month",
+    description: "Affordable technology support to help you focus on your mission, not your IT problems.",
+    features: [
+        "Managed Website Hosting & Updates",
+        "Secure Donation Payment Setup",
+        "Email & Microsoft 365 Support",
+        "Donor Database Management (Basic CRM)",
+        "Discounted Hardware Sourcing"
+    ]
+  },
+  {
+    id: 'sme',
+    name: "SME Growth",
+    audience: "For Small Businesses",
+    price: "R5,500",
+    frequency: "per month",
+    description: "The perfect balance of support and automation to help your business scale efficiently.",
+    features: [
+        "Unlimited Remote IT Helpdesk",
+        "1 x AI Customer Service Bot",
+        "Basic Workflow Automation (Finance/HR)",
+        "Cybersecurity & Antivirus",
+        "Monthly Performance Report"
+    ],
+    isPopular: true
+  },
+  {
+    id: 'enterprise',
+    name: "Corporate Partner",
+    audience: "For Established Companies",
+    price: "Custom",
+    frequency: "project based",
+    description: "Full digital transformation, custom software development, and advanced data strategy.",
+    features: [
+        "Dedicated IT Manager",
+        "Custom Software Development",
+        "Advanced RPA & Data Dashboards",
+        "On-site Support SLA",
+        "Strategic Tech Consulting"
+    ]
+  }
+];
+
+const EMAIL = "info@techbridgeinnovations.co.za";
 ---
-<BaseLayout title="Pricing">
+
+<BaseLayout title="Pricing Plans">
+    <style>
+        :root {
+            --primary: #161B45;
+            --accent: #469BD1;
+            --bg-light: #F9FAFB;
+            --border: #E5E7EB;
+        }
+
+        /* HEADER */
+        .page-header-pricing {
+            background: linear-gradient(rgba(22, 27, 69, 0.95), rgba(22, 27, 69, 0.85)), url('/img/0.png'); 
+            background-size: cover;
+            background-position: center;
+            padding: 100px 0;
+            text-align: center;
+            color: white;
+        }
+        .page-header-pricing h1 { font-size: 3rem; margin-bottom: 1rem; color: #fff; }
+        .page-header-pricing p { font-size: 1.2rem; opacity: 0.9; max-width: 700px; margin: 0 auto; }
+
+        /* PRICING GRID */
+        .pricing-section { padding: 80px 0; background: #fff; }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            align-items: start;
+        }
+
+        .pricing-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        }
+
+        /* Highlight Popular Card */
+        .pricing-card.popular {
+            border: 2px solid var(--accent);
+            background: #F0F9FF;
+        }
+        .popular-tag {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .plan-name { font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-bottom: 5px; }
+        .plan-audience { font-size: 0.9rem; color: #666; margin-bottom: 20px; display: block; font-weight: 500; }
+        
+        .plan-price { font-size: 2.5rem; font-weight: 800; color: var(--primary); }
+        .plan-freq { font-size: 1rem; color: #888; font-weight: 400; }
+        
+        .plan-desc { margin: 20px 0; color: #555; line-height: 1.6; }
+        
+        .features-list { list-style: none; padding: 0; margin: 20px 0 40px 0; text-align: left; }
+        .features-list li {
+            margin-bottom: 12px;
+            padding-left: 25px;
+            position: relative;
+            color: #444;
+        }
+        .features-list li::before {
+            content: '✔';
+            color: var(--accent);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        /* Buttons */
+        .btn-pricing {
+            margin-top: auto;
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .pricing-card.popular .btn-pricing { background: var(--accent); }
+        .btn-pricing:hover { opacity: 0.9; }
+    </style>
+
     <main>
-        <section class="page-header page-header-pricing">
-            <div class="hero-overlay"></div>
+        <section class="page-header-pricing">
             <div class="container">
-                <div class="hero-content" style="max-width: 100%; text-align: center;">
-                    <h1>Training & Development Pricing</h1>
-                    <p>Affordable, powerful training solutions designed to upskill your students and employees for the future.</p>
+                <h1>Simple, Transparent Pricing</h1>
+                <p>Choose the plan that fits your organization. No hidden fees. Cancel anytime.</p>
+            </div>
+        </section>
+
+        <section class="pricing-section">
+            <div class="container">
+                <div class="pricing-grid">
+                    {PLANS.map(plan => (
+                        <div class="pricing-card {plan.isPopular ? 'popular' : ''}" id={plan.id}>
+                            {plan.isPopular && <div class="popular-tag">Most Popular</div>}
+                            
+                            <h3 class="plan-name">{plan.name}</h3>
+                            <span class="plan-audience">{plan.audience}</span>
+                            
+                            <div class="plan-price">
+                                {plan.price}<span class="plan-freq"> / {plan.frequency}</span>
+                            </div>
+                            
+                            <p class="plan-desc">{plan.description}</p>
+                            
+                            <ul class="features-list">
+                                {plan.features.map(f => <li>{f}</li>)}
+                            </ul>
+
+                            <a href={`mailto:${EMAIL}?subject=Inquiry about ${plan.name} Plan`} class="btn-pricing">
+                                Contact Sales
+                            </a>
+                        </div>
+                    ))}
                 </div>
             </div>
         </section>
 
-        <section id="schools" class="section">
+        <section class="section section-gray" style="text-align: center;" id="contact">
             <div class="container">
-                <h2 class="section-title text-center">For Schools & Educational Institutions</h2>
-                <div class="pricing-grid">
-                    <div class="pricing-card">
-                        <h3>Digital Literacy Foundation</h3>
-                        <p class="price">R 5000 <span>/ workshop series</span></p>
-                        <p class="card-description">Equip your students with the essential digital skills for modern learning.</p>
-                        <ul class="features-list">
-                            <li>Basic Computer Skills Workshop</li>
-                            <li>Microsoft Office Suite Training</li>
-                            <li>Safe Internet Browsing Module</li>
-                            <li>For up to 30 learners</li>
-                        </ul>
-                        <a href="/contact" class="button secondary">Get Started</a>
-                    </div>
-                    <div class="pricing-card highlighted">
-                        <span class="highlight-tag">Most Popular</span>
-                        <h3>Future Skills Program</h3>
-                        <p class="price">R 12,000 <span>/ term</span></p>
-                        <p class="card-description">Go beyond the basics with career-focused tech workshops for students and teachers.</p>
-                        <ul class="features-list">
-                            <li>Includes Digital Literacy Foundation</li>
-                            <li>Intro to Web Development or Cybersecurity</li>
-                            <li>Teacher Training (Microsoft/Google Tools)</li>
-                            <li>For up to 50 learners & staff</li>
-                        </ul>
-                        <a href="/contact" class="button primary">Get Started</a>
-                    </div>
-                    <div class="pricing-card">
-                        <h3>Innovation Partner</h3>
-                        <p class="price">Custom <span>quote</span></p>
-                        <p class="card-description">A complete digital skills transformation program for your entire institution.</p>
-                        <ul class="features-list">
-                            <li>Custom Student Career Pathways</li>
-                            <li>Ongoing Teacher Professional Development</li>
-                            <li>Executive Leadership Training for Management</li>
-                            <li>Dedicated Program Coordinator</li>
-                        </ul>
-                        <a href="/quote" class="button secondary">Request a Quote</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="smes" class="section section-gray">
-            <div class="container">
-                <h2 class="section-title text-center">For Small & Medium Enterprises</h2>
-                <div class="pricing-grid">
-                    <div class="pricing-card">
-                        <h3>Business Essentials</h3>
-                        <p class="price">R 500 <span>/ month</span></p>
-                        <p class="card-description">Upskill your team with foundational business and digital skills.</p>
-                        <ul class="features-list">
-                            <li>Digital Marketing & SEO Course Access</li>
-                            <li>Microsoft Office Suite Training</li>
-                            <li>Financial Literacy Workshop</li>
-                            <li>Up to 5 team members</li>
-                        </ul>
-                        <a href="/contact" class="button secondary">Get Started</a>
-                    </div>
-                    <div class="pricing-card highlighted">
-                        <span class="highlight-tag">Best Value</span>
-                        <h3>Growth Accelerator</h3>
-                        <p class="price">R 1,200 <span>/ month</span></p>
-                        <p class="card-description">Drive growth with advanced training in management, sales, and project delivery.</p>
-                        <ul class="features-list">
-                            <li>Everything in Business Essentials</li>
-                            <li>Business Management Essentials</li>
-                            <li>Agile Project Management (PMP Intro)</li>
-                            <li>Up to 15 team members</li>
-                        </ul>
-                        <a href="/contact" class="button primary">Get Started</a>
-                    </div>
-                    <div class="pricing-card">
-                        <h3>Tech Transformation</h3>
-                        <p class="price">Custom <span>quote</span></p>
-                        <p class="card-description">A strategic partner to embed automation and advanced tech skills in your business.</p>
-                        <ul class="features-list">
-                            <li>Everything in Growth Accelerator</li>
-                            <li>Custom Automation (RPA) Training</li>
-                            <li>Cloud Computing & DevOps for Tech Teams</li>
-                            <li>Custom Training Strategy</li>
-                        </ul>
-                        <a href="/quote" class="button secondary">Request a Quote</a>
-                    </div>
-                </div>
+                <h2 style="color: var(--primary); margin-bottom: 1rem;">Need a Custom Solution?</h2>
+                <p style="max-width: 600px; margin: 0 auto 2rem auto;">We understand that every business is unique. If you need a specific combination of services, let's talk.</p>
+                <a href="/contact" class="button primary">Get a Custom Quote</a>
             </div>
         </section>
     </main>
