@@ -29,10 +29,41 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             box-shadow: 0 5px 15px rgba(70, 155, 209, 0.3);
             background-color: #3a8ac0;
         }
+
+        .feature-card {
+            padding: 2rem;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        .feature-card h3 {
+            color: var(--color-primary);
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+        .feature-card p {
+            color: var(--color-text-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin: 0;
+        }
     </style>
 
     <main>
-        <section class="hero-section" style="background-image: url('/img/front-view-business-people-meeting.jpg');">
+        <section class="hero-section" style="background-image: url('/img/tttt.png');">
             <div class="hero-overlay"></div>
             <div class="container">
                 <div class="hero-content">
@@ -61,52 +92,104 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             </div>
         </section>
 
+        
         <section class="section" id="services">
             <div class="container">
                 <h2 class="section-title text-center">Our AI Assistant Services</h2>
                 <div class="course-grid">
                     <div class="course-card">
                         <img src="/img/robot-handshake-human-background-futuristic-digital-age.jpg" alt="AI Customer Service Bot">
-                        <h3>AI Customer Service Bots</h3>
-                        <p>Engage customers instantly on your website, WhatsApp, or Facebook with smart, 24/7 AI-powered chatbots that resolve queries and improve satisfaction.</p>
-                        <ul class="card-details">
-                            <li><strong>Platform:</strong> Web, WhatsApp, FB</li>
-                            <li><strong>Best for:</strong> Support & FAQs</li>
-                        </ul>
-                        <div class="card-footer">
-                            <span class="card-price">From R5,000</span>
-                            <a href="/contact" class="button secondary">Learn More</a>
+                        <div class="course-card-content">
+                            <h3>AI Customer Service Bots</h3>
+                            <p>Engage customers instantly on your website, WhatsApp, or Facebook with smart, 24/7 AI-powered chatbots that resolve queries and improve satisfaction.</p>
+                            <ul class="card-details">
+                                <li><strong>Platform:</strong> Web, WhatsApp, FB</li>
+                                <li><strong>Best for:</strong> Support & FAQs</li>
+                            </ul>
+                            <div class="card-footer">
+                                <span class="card-price">From R5,000</span>
+                                <a href="/quote" class="button secondary">Get Quote</a>
+                            </div>
                         </div>
                     </div>
                     <div class="course-card">
-                        <img src="/img/representation-user-experience-interface-design.jpg" alt="Internal Workflow Automation">
-                        <h3>Internal Workflow Automation</h3>
-                        <p>Automate internal processes for HR, IT, or finance. Handle tasks like employee onboarding, IT support tickets, and report generation seamlessly.</p>
-                        <ul class="card-details">
-                            <li><strong>Integrations:</strong> Email, Slack, Databases</li>
-                            <li><strong>Best for:</strong> HR, IT & Operations</li>
-                        </ul>
-                        <div class="card-footer">
-                            <span class="card-price">From R8,500</span>
-                            <a href="/contact" class="button secondary">Learn More</a>
+                        <img src="/img/man-hand.jpg" alt="Internal Workflow Automation">
+                        <div class="course-card-content">
+                            <h3>Internal Workflow Automation</h3>
+                            <p>Automate internal processes for HR, IT, or finance. Handle tasks like employee onboarding, IT support tickets, and report generation seamlessly.</p>
+                            <ul class="card-details">
+                                <li><strong>Integrations:</strong> Email, Slack, Databases</li>
+                                <li><strong>Best for:</strong> HR, IT & Operations</li>
+                            </ul>
+                            <div class="card-footer">
+                                <span class="card-price">From R8,500</span>
+                                <a href="/quote" class="button secondary">Get Quote</a>
+                            </div>
                         </div>
                     </div>
                     <div class="course-card">
                         <img src="/img/laptops-transfer-downloading-data-cloud-computing-network-technology-infrastructure-data-diagram-icon-symbol-3d-rendering.jpg" alt="AI Sales Assistant">
-                        <h3>AI Sales & Lead Generation</h3>
-                        <p>Qualify leads, book meetings, and answer prospect questions automatically, ensuring your sales team only talks to the most qualified buyers.</p>
-                        <ul class="card-details">
-                            <li><strong>Features:</strong> Lead Scoring, CRM Sync</li>
-                            <li><strong>Best for:</strong> Sales & Marketing</li>
-                        </ul>
-                        <div class="card-footer">
-                            <span class="card-price">From R7,000</span>
-                            <a href="/contact" class="button secondary">Learn More</a>
+                        <div class="course-card-content">
+                            <h3>AI Sales & Lead Generation</h3>
+                            <p>Qualify leads, book meetings, and answer prospect questions automatically, ensuring your sales team only talks to the most qualified buyers.</p>
+                            <ul class="card-details">
+                                <li><strong>Features:</strong> Lead Scoring, CRM Sync</li>
+                                <li><strong>Best for:</strong> Sales & Marketing</li>
+                            </ul>
+                            <div class="card-footer">
+                                <span class="card-price">From R7,000</span>
+                                <a href="/quote" class="button secondary">Get Quote</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+
+        <section class="section section-gray">
+            <div class="container">
+                <h2 class="section-title text-center">Why Choose TechBridge Innovations?</h2>
+                <p style="text-align: center; max-width: 800px; margin: 0 auto 3rem auto; color: var(--color-text-light);">
+                    We empower small businesses, schools, and organizations with practical, affordable technology solutions. At TechBridge, we don’t just build technology — we solve real problems.
+                </p>
+                
+                <div class="course-grid">
+                    <div class="feature-card">
+                        <span class="feature-icon"></span>
+                        <h3>Practical, Affordable AI</h3>
+                        <p>Most AI is priced for corporates. We offer SME-friendly bots for support, sales, and workflows starting from just R5,000. Enterprise results at small business prices.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon"></span>
+                        <h3>Time-Saving Automation</h3>
+                        <p>We combine AI and RPA to cut down manual tasks like employee onboarding, finance admin, and data capturing. Save 15–40 hours per month.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <span class="feature-icon"></span>
+                        <h3>Full IT Support</h3>
+                        <p>Reliable support for small businesses & schools. From network setup to cloud migration and device support, get big-company IT support without the cost.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon"></span>
+                        <h3>Business & Tech Advisory</h3>
+                        <p>We guide you on digital strategy, tech stack selection, and process improvement. Our goal is to help your business scale faster and more efficiently.</p>
+                    </div>
+                   
+                    <div class="feature-card">
+                        <span class="feature-icon"></span>
+                        <h3>One-Stop Tech Partner</h3>
+                        <p>Stop hiring 5 different companies. Get AI, Automation, IT Support, Websites, Training, and Consulting all in one place, aligned to your goals.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon"></span>
+                        <h3>Proven Impact</h3>
+                        <p>From digital-ready schools to automated SMEs. We help organizations save money and improve efficiency with solutions that deliver measurable results.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
 
         <section class="section section-gray">
             <div class="container">
@@ -127,11 +210,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                                 <a href="/solutions?service=it-support" class="explore-btn">
                                     Explore Support Solutions <span>&rarr;</span>
                                 </a>
-                                
                             </div>
                         </div>
                         <div id="tab-hr" class="tab-pane">
-                             <h4>Automated HR & Operations</h4>
+                            <h4>Automated HR & Operations</h4>
                             <p>Streamline your internal processes, from onboarding new hires and answering policy questions to managing IT helpdesk tickets. Our workflow bots ensure tasks are done consistently and efficiently.</p>
                             <div class="tab-details">
                                 <span>Key Benefit: <strong>Reduce administrative workload by up to 60%</strong></span>
@@ -141,17 +223,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                             </div>
                         </div>
                         <div id="tab-sales" class="tab-pane">
-                             <h4>Intelligent Sales & Marketing Automation</h4>
+                            <h4>Intelligent Sales & Marketing Automation</h4>
                             <p>Capture and qualify leads around the clock. Our AI assistants can engage website visitors, ask qualifying questions, book demos, and sync lead data directly into your CRM, boosting your pipeline.</p>
                             <div class="tab-details">
                                 <span>Key Benefit: <strong>Increase qualified leads by up to 40%</strong></span>
-                             <a href="/solutions?service=crm" class="explore-btn">
+                                <a href="/solutions?service=crm" class="explore-btn">
                                     Explore Sales Tools <span>&rarr;</span>
                                 </a>
                             </div>
                         </div>
                         <div id="tab-data" class="tab-pane">
-                             <h4>Automated Data & Reporting</h4>
+                            <h4>Automated Data & Reporting</h4>
                             <p>Connect to your data sources and let an AI assistant generate daily, weekly, or monthly reports on demand. Simply ask for the metrics you need, and the bot will deliver the insights in seconds.</p>
                             <div class="tab-details">
                                 <span>Key Benefit: <strong>Get real-time business insights instantly</strong></span>
@@ -171,7 +253,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 <div class="testimonial-grid">
                     <div class="testimonial-card">
                         <div class="testimonial-author">
-                            
                             <div class="author-info">
                                 <strong>Naledi Molefe</strong>
                                 <span>CEO, Urban Gardens Pty Ltd</span>
@@ -181,9 +262,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                     </div>
                     <div class="testimonial-card">
                          <div class="testimonial-author">
-                            
                             <div class="author-info">
-                                <strong>David Chen</strong>
+                                <strong>Yanga Luhlangu</strong>
                                 <span>Operations Manager, FinCore Analytics</span>
                             </div>
                         </div>
@@ -196,12 +276,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <section class="section section-gray">
             <div class="container contact-section-grid">
                 <div class="contact-section-image">
-                    <img src="/img/unnamed.png" alt="A professional woman smiling">
+                    <img src="/img/ttt.png" alt="A professional woman smiling">
                 </div>
                 <div class="contact-section-form">
                     <h3>Ready to Automate?</h3>
                     <p>Get in touch with our team to learn more about our AI solutions and how we can help you achieve your business goals.</p>
-                    <form id="home-contact-form" action="https://formspree.io/f/YOUR_UNIQUE_CODE" method="POST">
+                    <form id="contact-page-form" action="https://api.web3forms.com/submit" method="POST">
+                        <input type="hidden" name="access_key" value="e79fd123-332f-4645-b01b-ab2083a37bb9">
+                        
                         <div class="form-group">
                             <label for="home-name">Name*</label>
                             <input type="text" id="home-name" name="name" required>
@@ -229,6 +311,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Tab Switching Logic
             const tabLinks = document.querySelectorAll('.tab-link');
             const tabPanes = document.querySelectorAll('.tab-pane');
 
@@ -284,15 +367,3 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         });
     </script>
 </BaseLayout>
-
-
-
-
-
-
-
-
-
-
-
-
