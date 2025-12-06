@@ -11,19 +11,6 @@ const { title } = Astro.props;
     <link rel="stylesheet" href="/style.css">
     <link rel="icon" href="/img/0.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Add logout button specific style if missing */
-        .btn-logout {
-            color: #EF4444; 
-            font-weight: 600; 
-            cursor: pointer; 
-            border: none; 
-            background: none; 
-            font-size: 0.95rem;
-            margin-left: 15px;
-        }
-        .btn-logout:hover { text-decoration: underline; }
-    </style>
 </head>
 <body>
 
@@ -41,7 +28,7 @@ const { title } = Astro.props;
                             <div class="mega-menu">
                                 <div class="container mega-menu-inner">
                                     <div class="mega-menu-media">
-                                        <img src="/img/0.png" alt="Corporate Solutions">
+                                        <img src="/img/0.png" alt="Corporate Solutions" style="width:100%; border-radius:12px;">
                                     </div>
                                     <div class="mega-menu-links">
                                         <h4>Our Enterprise Offerings</h4>
@@ -61,7 +48,7 @@ const { title } = Astro.props;
                              <div class="mega-menu">
                                 <div class="container mega-menu-inner">
                                     <div class="mega-menu-media">
-                                        <img src="/img/0.png" alt="Community Programs">
+                                        <img src="/img/0.png" alt="Community Programs" style="width:100%; border-radius:12px;">
                                     </div>
                                     <div class="mega-menu-links">
                                         <h4>How We Help</h4>
@@ -80,7 +67,7 @@ const { title } = Astro.props;
                              <div class="mega-menu">
                                 <div class="container mega-menu-inner">
                                     <div class="mega-menu-media">
-                                        <img src="/img/0.png" alt="Training Academy">
+                                        <img src="/img/0.png" alt="Training Academy" style="width:100%; border-radius:12px;">
                                     </div>
                                     <div class="mega-menu-links">
                                         <h4>Launch Your Career</h4>
@@ -96,20 +83,8 @@ const { title } = Astro.props;
                     </ul>
                 </div>
 
-                <div class="header-buttons" id="auth-container">
-                    <div id="logged-out-view">
-                        <a href="/contact" class="button secondary">Contact Us</a>
-                        <a href="/login" class="button primary" style="margin-left: 10px;">Log In</a>
-                    </div>
-                    
-                    <div id="logged-in-view" style="display: none; align-items: center;">
-                        <a href="/my-courses/dashboard" class="button primary">My Dashboard</a>
-                        <button id="nav-logout" class="btn-logout">Log Out</button>
-                    </div>
-                </div>
-                
                 <button class="mobile-toggle" id="mobile-toggle" aria-label="Open Menu">
-                    <div class="trigger"></div><div class="trigger"></div><div class="trigger"></div>
+                    ☰
                 </button>
             </nav>
         </div>
@@ -153,7 +128,7 @@ const { title } = Astro.props;
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
                     </a>
 
-                    <a href="https://www.facebook.com/" target="_blank" aria-label="Facebook">
+                    <a href="https://web.facebook.com/profile.php?id=100067679771515" target="_blank" aria-label="Facebook">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
                     </a>
 
@@ -163,52 +138,29 @@ const { title } = Astro.props;
                 </div>
             </div>
         </div>
-        <div class="footer-bottom">
+        <div class="footer-bottom" style="text-align:center; padding:20px; border-top:1px solid #ffffff20;">
             <p>&copy; 2025 TechBridge Innovation (Pty) Ltd. | <a href="/privacy">Privacy</a> | <a href="/terms">Terms</a></p>
         </div>
     </footer>
 
-    <script>
-        import { supabase } from '../supabaseClient.js';
-
-        async function checkAuth() {
-            const { data: { session } } = await supabase.auth.getSession();
-            
-            const loggedOutView = document.getElementById('logged-out-view');
-            const loggedInView = document.getElementById('logged-in-view');
-
-            if (session) {
-                // User IS logged in -> Show Dashboard & Logout
-                if(loggedOutView) loggedOutView.style.display = 'none';
-                if(loggedInView) loggedInView.style.display = 'flex';
-            } else {
-                // User is NOT logged in -> Show Login/Contact
-                if(loggedOutView) loggedOutView.style.display = 'flex';
-                if(loggedInView) loggedInView.style.display = 'none';
-            }
-        }
-
-        // Handle Logout
-        const logoutBtn = document.getElementById('nav-logout');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', async () => {
-                const { error } = await supabase.auth.signOut();
-                if (!error) {
-                    window.location.href = '/'; // Redirect home
-                }
+    <script is:inline>
+        const toggle = document.getElementById('mobile-toggle');
+        const menu = document.querySelector('.nav-menu-desktop');
+        
+        if(toggle && menu) {
+            toggle.addEventListener('click', () => {
+                menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+                menu.style.flexDirection = 'column';
+                menu.style.position = 'absolute';
+                menu.style.top = '80px';
+                menu.style.left = '0';
+                menu.style.width = '100%';
+                menu.style.background = '#fff';
+                menu.style.padding = '20px';
+                menu.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
             });
         }
-
-        // Run check on load
-        checkAuth();
-        
-        // Listen for auth changes (e.g. login on another tab)
-        supabase.auth.onAuthStateChange((event, session) => {
-            checkAuth();
-        });
     </script>
-
-    <script is:inline src="/script.js"></script>
 
 </body>
 </html>
