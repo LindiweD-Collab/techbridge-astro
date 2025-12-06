@@ -1,224 +1,97 @@
 ---
-
+// src/pages/internship.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Internships & Bootcamps">
+<BaseLayout title="Work-Readiness Program">
   <style>
-
     :root {
       --hero-height: 60vh;
       --card-shadow: 0 10px 20px rgba(0,0,0,0.08);
       --hover-shadow: 0 15px 30px rgba(0,0,0,0.12);
     }
 
-
+    /* HERO & GENERAL STYLES (Kept from previous) */
     .hero {
-      position: relative;
-      height: 400px;
+      position: relative; height: 400px;
       background: linear-gradient(rgba(22, 27, 69, 0.8), rgba(22, 27, 69, 0.7)), url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80');
-      background-size: cover;
-      background-position: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      color: white;
-      margin-bottom: 3rem;
+      background-size: cover; background-position: center;
+      display: flex; align-items: center; justify-content: center; text-align: center; color: white; margin-bottom: 3rem;
     }
+    .hero-content h1 { font-size: 3rem; margin-bottom: 1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #fff; }
+    .hero-content p { font-size: 1.25rem; max-width: 700px; margin: 0 auto; opacity: 0.9; }
+    .text-link { color: var(--color-accent); text-decoration: underline; font-weight: 600; transition: color 0.2s; }
+    .text-link:hover { color: var(--color-primary); }
 
-    .hero-content h1 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
+    /* TRACKS GRID */
+    .tracks-section { padding: 4rem 0; background-color: #f8f9fa; }
+    .tracks-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-top: 2rem; }
+    .track-card { background: white; padding: 2.5rem; border-radius: 16px; box-shadow: var(--card-shadow); transition: transform 0.3s ease; border-top: 5px solid var(--color-accent); display: flex; flex-direction: column; justify-content: space-between; }
+    .track-card:hover { transform: translateY(-10px); }
+    .track-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+    .track-card h3 { color: var(--color-primary); margin-bottom: 0.5rem; font-size: 1.5rem; }
+    .track-card p { color: #555; line-height: 1.6; font-size: 0.95rem; margin-bottom: 1.5rem; }
+    .tech-stack { font-size: 0.85rem; background: #eef5ff; color: var(--color-primary); padding: 10px; border-radius: 8px; font-weight: 600; }
 
-    .hero-content p {
-      font-size: 1.25rem;
-      max-width: 700px;
-      margin: 0 auto;
-      opacity: 0.9;
-    }
+    /* HOW IT WORKS */
+    .process-section { padding: 5rem 0; }
+    .steps-container { display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center; margin-top: 3rem; }
+    .step-item { flex: 1; min-width: 250px; text-align: center; }
+    .step-number { background: var(--color-primary); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; margin: 0 auto 1.5rem auto; box-shadow: 0 5px 15px rgba(22, 27, 69, 0.3); }
+    .step-item h4 { font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--color-primary); }
 
-
-    .text-link {
-      color: var(--color-accent);
-      text-decoration: underline;
-      font-weight: 600;
-      transition: color 0.2s;
-    }
-    .text-link:hover {
-      color: var(--color-primary);
-    }
-
-
-    .tracks-section {
-      padding: 4rem 0;
-      background-color: #f8f9fa;
+    /* FORM STYLES */
+    .section-gray { background: #F9FAFB; }
+    .form-container { max-width: 800px; margin: 0 auto; background: #fff; padding: 2.5rem; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group.full-width { grid-column: 1 / -1; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--color-primary); }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #E5E7EB; font-size: 1rem; font-family: inherit; }
+    .form-group textarea { min-height: 120px; resize: vertical; }
+    .form-button { width: 100%; padding: 1rem; font-size: 1.1rem; background: var(--color-accent); color: white; border: none; border-radius: 50px; cursor: pointer; font-weight: 700; }
+    .form-button:disabled { background: #ccc; cursor: not-allowed; }
+    .access-denied { padding: 40px; text-align: center; max-width: 700px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+    
+    /* --- NEW ASSESSMENT UI --- */
+    .assessment-container {
+        border: 2px solid var(--color-accent);
+        background: #F0F9FF;
+        padding: 30px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        text-align: left;
+        display: none; /* Hidden until track selected */
+        position: relative;
+        overflow: hidden;
     }
     
-    .tracks-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
-      margin-top: 2rem;
+    /* Instructions View */
+    .instructions-view h4 { margin-top: 0; color: #D97706; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
+    .warning-list { background: #FFFBEB; padding: 15px; border-radius: 8px; border-left: 4px solid #D97706; margin: 15px 0; }
+    .warning-list li { margin-bottom: 8px; font-size: 0.95rem; color: #78350F; }
+
+    /* Question View */
+    .question-view { display: none; }
+    .timer-bar-bg { width: 100%; height: 8px; background: #E5E7EB; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+    .timer-bar-fill { height: 100%; background: #2563EB; width: 100%; transition: width 1s linear; }
+    .question-text { font-size: 1.1rem; font-weight: 700; color: #1F2937; margin-bottom: 20px; }
+    
+    .option-btn {
+        display: block; width: 100%; padding: 15px; margin-bottom: 10px;
+        background: #fff; border: 2px solid #E5E7EB; border-radius: 10px;
+        text-align: left; cursor: pointer; font-size: 1rem; transition: all 0.2s;
     }
-
-    .track-card {
-      background: white;
-      padding: 2.5rem;
-      border-radius: 16px;
-      box-shadow: var(--card-shadow);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      border-top: 5px solid var(--color-accent);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .track-card:hover {
-      transform: translateY(-10px);
-      box-shadow: var(--hover-shadow);
-    }
-
-    .track-icon {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      display: block;
-    }
-
-    .track-card h3 {
-      color: var(--color-primary);
-      margin-bottom: 0.5rem;
-      font-size: 1.5rem;
-    }
-
-    .track-card p {
-      color: #555;
-      line-height: 1.6;
-      font-size: 0.95rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .tech-stack {
-      font-size: 0.85rem;
-      background: #eef5ff;
-      color: var(--color-primary);
-      padding: 10px;
-      border-radius: 8px;
-      font-weight: 600;
-    }
-
-
-    .process-section {
-      padding: 5rem 0;
-    }
-
-    .steps-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
-      justify-content: center;
-      margin-top: 3rem;
-    }
-
-    .step-item {
-      flex: 1;
-      min-width: 250px;
-      text-align: center;
-      position: relative;
-    }
-
-    .step-number {
-      background: var(--color-primary);
-      color: white;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin: 0 auto 1.5rem auto;
-      box-shadow: 0 5px 15px rgba(22, 27, 69, 0.3);
-    }
-
-    .step-item h4 {
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
-      color: var(--color-primary);
-    }
-
-
-    .cta-section {
-      background: white;
-      padding: 4rem 0;
-    }
-
-    .cta-box {
-      background: linear-gradient(135deg, var(--color-primary), #2a3270);
-      border-radius: 20px;
-      padding: 3rem;
-      text-align: center;
-      color: white;
-      box-shadow: var(--hover-shadow);
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .cta-box h2 {
-      color: white;
-      margin-bottom: 1rem;
-    }
-
-    .cta-buttons {
-      display: flex;
-      gap: 20px;
-      justify-content: center;
-      margin-top: 2rem;
-      flex-wrap: wrap;
-    }
-
-    .btn-apply {
-      background: var(--color-accent); 
-      color: white;
-      padding: 15px 40px;
-      border-radius: 50px;
-      font-weight: bold;
-      text-decoration: none;
-      font-size: 1.1rem;
-      transition: transform 0.2s, background 0.2s;
-      border: 2px solid var(--color-accent);
-    }
-
-    .btn-apply:hover {
-      transform: scale(1.05);
-      background: transparent;
-    }
-
-    .btn-secondary-outline {
-      background: transparent;
-      color: white;
-      padding: 15px 30px;
-      border-radius: 50px;
-      font-weight: bold;
-      text-decoration: none;
-      font-size: 1rem;
-      border: 2px solid rgba(255,255,255,0.5);
-      transition: border-color 0.2s, color 0.2s;
-    }
-
-    .btn-secondary-outline:hover {
-      border-color: white;
-      background: rgba(255,255,255,0.1);
+    .option-btn:hover { border-color: #2563EB; background: #EFF6FF; }
+    
+    /* Ban Message */
+    .ban-message {
+        background: #FEE2E2; border: 2px solid #EF4444; color: #991B1B;
+        padding: 30px; border-radius: 12px; text-align: center; display: none;
     }
 
     @media (max-width: 768px) {
-      .hero-content h1 { font-size: 2rem; }
-      .cta-buttons { flex-direction: column; }
+      .form-grid { grid-template-columns: 1fr; }
     }
   </style>
 
@@ -236,57 +109,29 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       
       <div class="tracks-grid">
         <div class="track-card">
-          <div>
-            <span class="track-icon"></span>
-            <h3>Cloud Computing</h3>
-            <p>Master cloud fundamentals, deployment strategies, and Infrastructure as Code.</p>
-          </div>
+          <div><span class="track-icon"></span><h3>Cloud Computing</h3><p>Master cloud fundamentals, deployment strategies, and Infrastructure as Code.</p></div>
           <div class="tech-stack">Tools: AWS, Firebase, Heroku, Docker</div>
         </div>
-
         <div class="track-card">
-          <div>
-            <span class="track-icon"></span>
-            <h3>Data Analytics</h3>
-            <p>Learn to clean, analyze, and visualize data to drive business decisions.</p>
-          </div>
+          <div><span class="track-icon"></span><h3>Data Analytics</h3><p>Learn to clean, analyze, and visualize data to drive business decisions.</p></div>
           <div class="tech-stack">Tools: Python, Pandas, SQL, Power BI</div>
         </div>
-
         <div class="track-card">
-          <div>
-            <span class="track-icon"></span>
-            <h3>RPA Automation</h3>
-            <p>Build bots to automate repetitive tasks and streamline business workflows.</p>
-          </div>
+          <div><span class="track-icon"></span><h3>RPA Automation</h3><p>Build bots to automate repetitive tasks and streamline business workflows.</p></div>
           <div class="tech-stack">Tools: UiPath, Power Automate, Low-Code</div>
         </div>
-
         <div class="track-card">
-          <div>
-            <span class="track-icon"></span>
-            <h3>Web Development</h3>
-            <p>Build modern, responsive websites and single-page applications from scratch.</p>
-          </div>
+          <div><span class="track-icon"></span><h3>Web Development</h3><p>Build modern, responsive websites and single-page applications from scratch.</p></div>
           <div class="tech-stack">Tools: React, Astro, Node.js, Supabase</div>
         </div>
         <div class="track-card">
-  <div>
-    <span class="track-icon"></span>
-    <h3>IT Support</h3>
-    <p>Master hardware troubleshooting, operating systems, and networking to solve technical issues effectively.</p>
-  </div>
-  <div class="tech-stack">Tools: Windows, Linux, Active Directory, Networking</div>
-</div>
-
-<div class="track-card">
-  <div>
-    <span class="track-icon"></span>
-    <h3>Business Analysis</h3>
-    <p>Bridge the gap between business needs and IT solutions through requirements gathering and process mapping.</p>
-  </div>
-  <div class="tech-stack">Tools: Excel, SQL, BPMN, Jira, Visio</div>
-</div>
+          <div><span class="track-icon"></span><h3>IT Support</h3><p>Master hardware troubleshooting, operating systems, and networking to solve technical issues effectively.</p></div>
+          <div class="tech-stack">Tools: Windows, Linux, Active Directory, Networking</div>
+        </div>
+        <div class="track-card">
+          <div><span class="track-icon"></span><h3>Business Analysis</h3><p>Bridge the gap between business needs and IT solutions through requirements gathering and process mapping.</p></div>
+          <div class="tech-stack">Tools: Excel, SQL, BPMN, Jira, Visio</div>
+        </div>
       </div>
     </div>
   </section>
@@ -294,17 +139,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <section class="process-section">
     <div class="container">
       <h2 class="section-title text-center" style="color: var(--color-primary);">How It Works</h2>
-      
       <div class="steps-container">
         <div class="step-item">
           <div class="step-number">1</div>
           <h4>Apply Online</h4>
-          <p>Fill out our <a href="/my-courses/apply" class="text-link">application form</a> to share your background and interests.</p>
+          <p>Fill out our <a href="#apply" class="text-link">application form</a> and pass the AI tech assessment.</p>
         </div>
         <div class="step-item">
           <div class="step-number">2</div>
           <h4>Screening</h4>
-          <p>Complete a short logic or coding assessment to verify your readiness.</p>
+          <p>We review your skills profile and portfolio proof.</p>
         </div>
         <div class="step-item">
           <div class="step-number">3</div>
@@ -320,22 +164,455 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 
-  <section class="cta-section">
+  
+
+  <section class="section section-gray" id="apply">
     <div class="container">
-      <div class="cta-box">
-        <h2>Ready to Launch Your Career?</h2>
-        <p>Join a community of learners and start building your future today.</p>
-        
-        <div class="cta-buttons">
-          <a href="/work-readiness#apply" class="btn-apply">Apply Now</a>
-          <a href="/work-readiness" class="btn-secondary-outline">View Active Projects</a>
+        <h2 class="section-title text-center">Student Application Form</h2>
+
+        <div id="ban-message" class="ban-message">
+            <h3> Application Blocked</h3>
+            <p>You have failed the skills assessment twice. To ensure the quality of our program, you must wait <strong>3 months</strong> before reapplying.</p>
+            <p>Please use this time to upskill and improve your technical knowledge.</p>
         </div>
-        
-        <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.8;">
-          Already enrolled? <a href="/login" style="color: white; text-decoration: underline;">Log in here</a>.
-        </p>
-      </div>
+
+        <div id="login-prompt-for-form" class="access-denied">
+            <h2>Please Log In to Apply</h2>
+            <p>You must be logged in to apply. This allows us to save your progress and track your application.</p>
+            <a href="/login?redirect=/internship#apply" class="button primary">Log In / Sign Up</a>
+        </div>
+
+        <div class="form-container" id="form-wrapper" style="display: none;">
+            <p style="text-align: center; margin-top: -1rem; margin-bottom: 2rem;">Applying as <strong id="user-email-display"></strong>.</p>
+            
+            <form id="intern-form">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="id-number">SA ID / Passport Number*</label>
+                        <input type="text" id="id-number" placeholder="Enter your 13-digit ID" required onblur="checkBanStatus()">
+                        <small style="color:red; display:none;" id="id-error"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone / WhatsApp*</label>
+                        <input type="tel" id="phone" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="qualification">Highest Qualification*</label>
+                        <select id="qualification" required onchange="toggleDegreeFields()">
+                            <option value="" disabled selected>-- Select Qualification --</option>
+                            <option value="Matric">Matric / Grade 12</option>
+                            <option value="Certificate">Certificate / Short Course</option>
+                            <option value="Diploma">Diploma</option>
+                            <option value="Degree">Bachelor's Degree or Higher</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width" id="institution-field" style="display:none;">
+                        <label for="institution">Institution Name & Year of Graduation</label>
+                        <input type="text" id="institution" placeholder="e.g., University of Johannesburg (2023)">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="track">Select Program Track*</label>
+                        <select id="track" required onchange="showAssessmentIntro()">
+                            <option value="" disabled selected>-- Select a track to start assessment --</option>
+                            <option value="Software Development">Software Development</option>
+                            <option value="Cloud & DevOps">Cloud & DevOps</option>
+                            <option value="Data Science & AI">Data Science & AI</option>
+                            <option value="Business & Marketing">Business & Marketing</option>
+                            <option value="IT Support">IT Support</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group full-width" id="assessment-container">
+                        
+                        <div id="intro-view" class="instructions-view">
+                            <h4> Strict Skill Verification</h4>
+                            <p>You are about to take a technical assessment. Please read the rules carefully:</p>
+                            <ul class="warning-list">
+                                <li><strong>No Tab Switching:</strong> If you switch tabs, minimize the browser, or click away, the test will instantly fail.</li>
+                                <li><strong>Timed Questions:</strong> You have <strong>30 seconds</strong> per question.</li>
+                                <li><strong>2 Attempts Only:</strong> If you fail twice, you will be blocked from applying for 3 months.</li>
+                                <li><strong>5 Questions:</strong> You must score 5/5 to proceed.</li>
+                            </ul>
+                            <button type="button" class="form-button" onclick="startTest()" style="background:#D97706;">I Understand - Start Test</button>
+                        </div>
+
+                        <div id="quiz-view" class="question-view">
+                            <div class="timer-bar-bg"><div id="timer-fill" class="timer-bar-fill"></div></div>
+                            <p style="text-align:right; font-size:0.8rem; color:#666;">Question <span id="q-current">1</span> of 5</p>
+                            <div id="question-text" class="question-text"></div>
+                            <div id="options-container"></div>
+                        </div>
+
+                        <div id="result-view" style="display:none; text-align:center;">
+                            <h3 id="result-title"></h3>
+                            <p id="result-msg"></p>
+                            <button type="button" id="retry-btn" class="form-button" onclick="resetTest()" style="display:none; background:#666;">Try Again</button>
+                        </div>
+                    </div>
+
+                    <div id="post-assessment-fields" style="display:none;">
+                        <div class="form-group full-width">
+                            <label for="why-join">Why do you want to join this program?*</label>
+                            <textarea id="why-join" rows="5" placeholder="Tell us about your passion for tech..." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="cv-file">Upload your CV (PDF)*</label>
+                            <input type="file" id="cv-file" accept=".pdf" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="matric-file">Upload Matric/Qualification Cert (PDF)*</label>
+                            <input type="file" id="matric-file" accept=".pdf" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="portfolio-file">Proof of Skills / Portfolio <small>(Optional but recommended)</small></label>
+                            <input type="file" id="portfolio-file" accept=".pdf,.zip,.png,.jpg">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="linkedin-link">LinkedIn / GitHub Profile <small>(Optional)</small></label>
+                            <input type="url" id="linkedin-link" placeholder="https://linkedin.com/in/...">
+                        </div>
+                        <button type="submit" class="form-button" id="submit-button">Submit Application</button>
+                    </div>
+                </div>
+                <p id="form-status" class="form-status"></p>
+            </form>
+        </div>
     </div>
   </section>
-
 </BaseLayout>
+
+<script>
+    import { supabase } from '../supabaseClient.js';
+    
+    let currentUser = null;
+    let currentID = "";
+    let attempts = 2;
+    
+    // Test State
+    let testActive = false;
+    let questionsQueue = [];
+    let currentQIndex = 0;
+    let score = 0;
+    let timerInterval = null;
+    let timeLeft = 30;
+
+    // --- QUESTIONS BANK (Harder) ---
+    const QUESTIONS = {
+        "Software Development": [
+            { q: "What is the time complexity of accessing an element in a Hash Map?", options: ["O(n)", "O(1)", "O(log n)"], a: "O(1)" },
+            { q: "Which principle states that objects should be open for extension but closed for modification?", options: ["SOLID", "Open/Closed", "DRY"], a: "Open/Closed" },
+            { q: "In Git, which command effectively 'undoes' the last commit but keeps changes in staging?", options: ["git reset --soft HEAD~1", "git revert HEAD", "git checkout ."], a: "git reset --soft HEAD~1" },
+            { q: "Which HTTP status code represents a conflict?", options: ["400", "409", "500"], a: "409" },
+            { q: "What is the primary difference between SQL and NoSQL?", options: ["Cost", "Relational vs Non-Relational", "Speed"], a: "Relational vs Non-Relational" }
+        ],
+        "Cloud & DevOps": [
+            { q: "In Kubernetes, what component manages the state of the cluster?", options: ["etcd", "Kubelet", "Docker"], a: "etcd" },
+            { q: "Which AWS service is used for serverless computing?", options: ["EC2", "Lambda", "S3"], a: "Lambda" },
+            { q: "What does 'Idempotency' mean in Infrastructure as Code?", options: ["Runs faster every time", "Result is same regardless of run count", "Code is encrypted"], a: "Result is same regardless of run count" },
+            { q: "Which network layer does a Load Balancer typically operate on?", options: ["Layer 1", "Layer 4 or 7", "Layer 2"], a: "Layer 4 or 7" },
+            { q: "What is the purpose of a Dockerfile?", options: ["To store logs", "To build an image", "To run a container"], a: "To build an image" }
+        ],
+        "Data Science & AI": [
+            { q: "Which algorithm is an example of Unsupervised Learning?", options: ["Linear Regression", "K-Means Clustering", "Decision Trees"], a: "K-Means Clustering" },
+            { q: "What handles missing values in a Pandas DataFrame?", options: ["fillna()", "remove()", "empty()"], a: "fillna()" },
+            { q: "Which metric is best for imbalanced classification datasets?", options: ["Accuracy", "F1-Score", "MSE"], a: "F1-Score" },
+            { q: "In SQL, which join returns all records when there is a match in either left or right table?", options: ["INNER JOIN", "FULL OUTER JOIN", "LEFT JOIN"], a: "FULL OUTER JOIN" },
+            { q: "What is Overfitting?", options: ["Model performs well on training but poor on test", "Model is too simple", "Model takes too long"], a: "Model performs well on training but poor on test" }
+        ],
+        "IT Support": [
+            { q: "Which protocol automatically assigns IP addresses?", options: ["DNS", "DHCP", "FTP"], a: "DHCP" },
+            { q: "What does a subnet mask do?", options: ["Hides IP", "Identifies network vs host portion", "Encrypts traffic"], a: "Identifies network vs host portion" },
+            { q: "Which RAID level provides mirroring?", options: ["RAID 0", "RAID 1", "RAID 5"], a: "RAID 1" },
+            { q: "What is the default port for HTTPS?", options: ["80", "443", "22"], a: "443" },
+            { q: "What does the command 'tracert' do?", options: ["Traces the path of a packet", "Tracks user activity", "Tests RAM"], a: "Traces the path of a packet" }
+        ],
+        "Business & Marketing": [
+            { q: "What is CAC?", options: ["Client Account Cost", "Customer Acquisition Cost", "Click Active Count"], a: "Customer Acquisition Cost" },
+            { q: "In SEO, what is a 'Canonical Tag' used for?", options: ["To bold text", "To prevent duplicate content issues", "To track clicks"], a: "To prevent duplicate content issues" },
+            { q: "What is the outcome of A/B testing?", options: ["More traffic", "Comparing two versions to see which performs better", "Fixing bugs"], a: "Comparing two versions to see which performs better" },
+            { q: "In Agile, what is a 'User Story'?", options: ["A bug report", "A description of a feature from end-user perspective", "A database schema"], a: "A description of a feature from end-user perspective" },
+            { q: "Which metric measures customer loyalty?", options: ["NPS (Net Promoter Score)", "CPC", "CTR"], a: "NPS (Net Promoter Score)" }
+        ]
+    };
+
+    // --- 1. Toggle Fields ---
+    window.toggleDegreeFields = function() {
+        const qual = document.getElementById('qualification').value;
+        document.getElementById('institution-field').style.display = (qual === 'Diploma' || qual === 'Degree') ? 'block' : 'none';
+    }
+
+    // --- 2. Show Intro & Check ID ---
+    window.showAssessmentIntro = function() {
+        const idVal = document.getElementById('id-number').value;
+        if(idVal.length < 6) {
+            alert("Please enter a valid ID number first.");
+            document.getElementById('track').value = "";
+            return;
+        }
+        document.getElementById('assessment-container').style.display = 'block';
+        document.getElementById('intro-view').style.display = 'block';
+        document.getElementById('quiz-view').style.display = 'none';
+        document.getElementById('result-view').style.display = 'none';
+    }
+
+    // --- 3. Check Ban Status (Database) ---
+    window.checkBanStatus = async function() {
+        const idInput = document.getElementById('id-number');
+        currentID = idInput.value.trim();
+        if (currentID.length < 6) return;
+
+        const { data } = await supabase
+            .from('failed_assessments')
+            .select('created_at')
+            .eq('id_number', currentID)
+            .order('created_at', { ascending: false })
+            .limit(1);
+
+        if (data && data.length > 0) {
+            const lastFail = new Date(data[0].created_at);
+            const now = new Date();
+            const diffDays = Math.ceil(Math.abs(now - lastFail) / (1000 * 60 * 60 * 24));
+
+            if (diffDays < 90) { 
+                document.getElementById('form-wrapper').style.display = 'none';
+                document.getElementById('ban-message').style.display = 'block';
+            }
+        }
+    }
+
+    // --- 4. START TEST (Anti-Cheat Mode) ---
+    window.startTest = function() {
+        const track = document.getElementById('track').value;
+        questionsQueue = QUESTIONS[track];
+        if (!questionsQueue) return;
+
+        testActive = true;
+        score = 0;
+        currentQIndex = 0;
+
+        // UI Switch
+        document.getElementById('intro-view').style.display = 'none';
+        document.getElementById('quiz-view').style.display = 'block';
+
+        // Start Anti-Cheat Listener
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+
+        // Load Q1
+        loadQuestion();
+    }
+
+    // --- 5. Anti-Cheat Logic ---
+    function handleVisibilityChange() {
+        if (document.hidden && testActive) {
+            failTest("Tab switching detected! Assessment disqualified.");
+        }
+    }
+
+    // --- 6. Load Question & Timer ---
+    function loadQuestion() {
+        if (!testActive) return;
+        
+        const q = questionsQueue[currentQIndex];
+        document.getElementById('q-current').textContent = currentQIndex + 1;
+        document.getElementById('question-text').textContent = q.q;
+        
+        const optsContainer = document.getElementById('options-container');
+        optsContainer.innerHTML = '';
+
+        q.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.textContent = opt;
+            btn.type = 'button'; // Prevent form submit
+            btn.onclick = () => submitAnswer(opt);
+            optsContainer.appendChild(btn);
+        });
+
+        // Reset Timer
+        timeLeft = 30;
+        document.getElementById('timer-fill').style.width = '100%';
+        clearInterval(timerInterval);
+        
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            const pct = (timeLeft / 30) * 100;
+            document.getElementById('timer-fill').style.width = pct + '%';
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                submitAnswer(null); // Timeout counts as wrong
+            }
+        }, 1000);
+    }
+
+    // --- 7. Submit Answer ---
+    function submitAnswer(selected) {
+        clearInterval(timerInterval);
+        const correct = questionsQueue[currentQIndex].a;
+        
+        if (selected === correct) {
+            score++;
+        }
+
+        currentQIndex++;
+
+        if (currentQIndex < questionsQueue.length) {
+            loadQuestion();
+        } else {
+            finishTest();
+        }
+    }
+
+    // --- 8. Finish Test ---
+    async function finishTest() {
+        testActive = false;
+        document.removeEventListener("visibilitychange", handleVisibilityChange);
+        
+        document.getElementById('quiz-view').style.display = 'none';
+        const resView = document.getElementById('result-view');
+        const resTitle = document.getElementById('result-title');
+        const resMsg = document.getElementById('result-msg');
+        resView.style.display = 'block';
+
+        if (score === 5) {
+            // PASS
+            resTitle.textContent = " Assessment Passed!";
+            resTitle.style.color = "#10B981";
+            resMsg.textContent = "You have verified your skills. Please complete your application below.";
+            document.getElementById('post-assessment-fields').style.display = 'block';
+            document.getElementById('assessment-container').style.display = 'none'; // Hide quiz box
+        } else {
+            // FAIL
+            failTest(`You scored ${score}/5. You need 5/5 to pass.`);
+        }
+    }
+
+    // --- 9. Handle Failure & Ban ---
+    async function failTest(reason) {
+        testActive = false;
+        document.removeEventListener("visibilitychange", handleVisibilityChange);
+        clearInterval(timerInterval);
+
+        document.getElementById('quiz-view').style.display = 'none';
+        const resView = document.getElementById('result-view');
+        resView.style.display = 'block';
+        
+        attempts--;
+        
+        document.getElementById('result-title').textContent = " Assessment Failed";
+        document.getElementById('result-title').style.color = "#EF4444";
+        document.getElementById('result-msg').innerHTML = `${reason}<br><strong>Attempts remaining: ${attempts}</strong>`;
+
+        if (attempts > 0) {
+            document.getElementById('retry-btn').style.display = 'inline-block';
+        } else {
+            // PERMANENT BAN LOGIC
+            document.getElementById('retry-btn').style.display = 'none';
+            document.getElementById('result-msg').innerHTML = "You have failed twice. <strong>You are now blocked for 3 months.</strong>";
+            
+            // Write to DB
+            await supabase.from('failed_assessments').insert({
+                id_number: currentID,
+                user_id: currentUser?.id,
+                track: document.getElementById('track').value
+            });
+
+            setTimeout(() => {
+                location.reload(); // Will trigger the checkBanStatus on load/input
+            }, 3000);
+        }
+    }
+
+    window.resetTest = function() {
+        document.getElementById('result-view').style.display = 'none';
+        startTest();
+    }
+
+    // --- Auth & Init ---
+    const internForm = document.getElementById('intern-form');
+    const loginPromptEl = document.getElementById('login-prompt-for-form');
+    const formWrapperEl = document.getElementById('form-wrapper');
+
+    supabase.auth.onAuthStateChange(async (event, session) => {
+        if (session && session.user) {
+            currentUser = session.user;
+            loginPromptEl.style.display = 'none';
+            formWrapperEl.style.display = 'block';
+            document.getElementById('user-email-display').textContent = currentUser.email;
+        } else {
+            loginPromptEl.style.display = 'block';
+            formWrapperEl.style.display = 'none';
+        }
+    });
+
+    // --- Form Submission (Same as previous logic) ---
+    if (internForm) {
+        internForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const button = document.getElementById('submit-button');
+            const statusEl = document.getElementById('form-status');
+            button.disabled = true;
+            button.textContent = 'Uploading...';
+            
+            try {
+                // 1. File Uploads
+                const cvFile = document.getElementById('cv-file').files[0];
+                const matricFile = document.getElementById('matric-file').files[0];
+                const portFile = document.getElementById('portfolio-file').files[0];
+
+                const ts = Date.now();
+                const cvPath = `${currentUser.id}/CV_${ts}_${cvFile.name}`;
+                const matPath = `${currentUser.id}/MAT_${ts}_${matricFile.name}`;
+                let portUrl = null;
+
+                await supabase.storage.from('application_uploads').upload(cvPath, cvFile);
+                await supabase.storage.from('application_uploads').upload(matPath, matricFile);
+                
+                const { data: cvUrl } = supabase.storage.from('application_uploads').getPublicUrl(cvPath);
+                const { data: matUrl } = supabase.storage.from('application_uploads').getPublicUrl(matPath);
+
+                if (portFile) {
+                    const pPath = `${currentUser.id}/PORT_${ts}_${portFile.name}`;
+                    await supabase.storage.from('application_uploads').upload(pPath, portFile);
+                    const { data } = supabase.storage.from('application_uploads').getPublicUrl(pPath);
+                    portUrl = data.publicUrl;
+                }
+
+                // 2. DB Insert
+                const { error } = await supabase.from('student_applications').insert({
+                    user_id: currentUser.id,
+                    full_name: currentUser.user_metadata.full_name,
+                    email: currentUser.email,
+                    phone: document.getElementById('phone').value,
+                    id_number: document.getElementById('id-number').value,
+                    qualification: document.getElementById('qualification').value,
+                    institution: document.getElementById('institution').value,
+                    track: document.getElementById('track').value,
+                    why_join: document.getElementById('why-join').value,
+                    linkedin_url: document.getElementById('linkedin-link').value,
+                    cv_url: cvUrl.publicUrl,
+                    matric_cert_url: matUrl.publicUrl,
+                    portfolio_url: portUrl,
+                    tech_test_passed: true
+                });
+
+                if(error) throw error;
+
+                statusEl.textContent = "Application Submitted Successfully!";
+                statusEl.style.color = "green";
+                internForm.reset();
+                document.getElementById('post-assessment-fields').style.display = 'none';
+                document.getElementById('assessment-container').style.display = 'none';
+
+            } catch(err) {
+                console.error(err);
+                statusEl.textContent = "Error: " + err.message;
+                button.disabled = false;
+            }
+        });
+    }
+</script>
