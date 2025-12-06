@@ -184,8 +184,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         <div class="form-container" id="form-wrapper" style="display: none;">
            <p style="text-align: center; margin-top: -1rem; margin-bottom: 2rem; color: #666;">
-              Applying as: <strong id="user-email-display" style="color: var(--color-primary);">Loading...</strong>
-</p         >
+    Applying as: <strong id="user-email-display" style="color: var(--color-primary);">Loading...</strong>
+    
+    <button id="form-logout-btn" type="button" style="background: none; border: none; color: #EF4444; text-decoration: underline; cursor: pointer; font-size: 0.9rem; margin-left: 8px;">
+        (Log Out)
+    </button>
+</p>
             
             <form id="intern-form">
                 <div class="form-grid">
@@ -553,6 +557,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             formWrapperEl.style.display = 'none';
         }
     });
+
+    const formLogoutBtn = document.getElementById('form-logout-btn');
+    if (formLogoutBtn) {
+        formLogoutBtn.addEventListener('click', async () => {
+            // Sign out
+            await supabase.auth.signOut();
+            // Reload page to force the login prompt to appear again
+            window.location.reload();
+        });
+    }
 
     // --- Form Submission (Same as previous logic) ---
     if (internForm) {
