@@ -137,7 +137,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 </div>
 
                 <div class="form-container" id="form-wrapper" style="display: none;">
-                    <p style="text-align: center; margin-top: -1rem; margin-bottom: 2rem;">You are applying as <strong id="user-email-display"></strong>.</p>
+                  <p style="text-align: center; margin-top: -1rem; margin-bottom: 2rem; color: #666;">
+    Applying as: <strong id="user-email-display" style="color: var(--color-primary);">Loading...</strong>
+</p>
                     <form id="intern-form">
                         <div class="form-grid">
                             <div class="form-group">
@@ -251,13 +253,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 currentUser = session.user;
                 loginPromptEl.style.display = 'none';
                 formWrapperEl.style.display = 'block';
-                document.getElementById('user-email-display').textContent = currentUser.email;
-                checkUserRole(currentUser); // Also check if they are a partner
-            } else {
-                // USER IS LOGGED OUT
-                loginPromptEl.style.display = 'block';
-                formWrapperEl.style.display = 'none';
-            }
+               const displayName = currentUser.user_metadata.full_name || currentUser.email;
+            document.getElementById('user-email-display').textContent = displayName;
+            
+            checkUserRole(currentUser); 
+        } else {
+            loginPromptEl.style.display = 'block';
+            formWrapperEl.style.display = 'none';
+        }
         });
 
         // Handle the new application form submission
